@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Application Verification</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    min-height:100vh;
+    background:#16a34a;
+    overflow-x:hidden;
+}
+
+.verification-page{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+/* TOP SECTION */
+
+.top-area{
+    height:40vh;
+    min-height:280px;
+    background:linear-gradient(160deg,#22c55e,#15803d);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:20px;
+}
+
+.top-image-box{
+    width:300px;
+    height:300px;
+}
+
+.top-image-box img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+}
+.logo{
+    font-size:34px;
+    font-weight:900;
+    letter-spacing:1px;
+    margin-bottom:6px;
+}
+
+.top-title{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:7px;
+}
+
+.top-subtitle{
+    max-width:320px;
+    font-size:13px;
+    line-height:1.5;
+    color:rgba(255,255,255,.85);
+}
+
+/* BIKE ANIMATION */
+
+.bike-road{
+    width:210px;
+    height:65px;
+    margin-top:24px;
+    position:relative;
+    overflow:hidden;
+}
+
+.bike{
+    position:absolute;
+    left:50%;
+    bottom:15px;
+    transform:translateX(-50%);
+    font-size:43px;
+    line-height:1;
+    animation:bikeMove 1.5s ease-in-out infinite;
+    will-change:transform;
+}
+
+.road{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:7px;
+    height:3px;
+    border-radius:20px;
+    background:rgba(255,255,255,.65);
+}
+.tick-loop{
+    animation:tickPulse 1.4s infinite;
+}
+
+@keyframes tickPulse{
+
+    0%,100%{
+        transform:scale(1);
+        box-shadow:0 0 0 0 rgba(22,163,74,.35);
+    }
+
+    50%{
+        transform:scale(1.18);
+        box-shadow:0 0 0 18px rgba(22,163,74,0);
+    }
+}
+
+
+/* BOTTOM SHEET */
+
+.status-sheet{
+    width:100%;
+    min-height:64vh;
+    margin-top:-36px;
+    padding:18px 22px 30px;
+    background:#fff;
+    border-radius:34px 34px 0 0;
+    position:relative;
+    z-index:5;
+    box-shadow:0 -12px 35px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+.sheet-handle{
+    width:46px;
+    height:5px;
+    margin:0 auto 22px;
+    border-radius:20px;
+    background:#d1d5db;
+}
+
+/* STATUS ICON */
+
+.status-icon-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:16px;
+}
+
+.status-icon{
+    width:92px;
+    height:92px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    font-weight:900;
+    animation:iconPop .45s ease;
+}
+
+@keyframes iconPop{
+    from{
+        opacity:0;
+        transform:scale(.7);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.pending{
+    background:#e0f2fe;
+    color:#0284c7;
+    box-shadow:0 0 0 14px rgba(2,132,199,.10);
+}
+.rejected{
+    background:#fee2e2;
+    color:#dc2626;
+    box-shadow:0 0 0 14px rgba(220,38,38,.08);
+}
+
+.approved{
+    background:#dcfce7;
+    color:#16a34a;
+    box-shadow:0 0 0 14px rgba(22,163,74,.08);
+}
+
+/* STATUS TEXT */
+
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:30px;
+    padding:6px 14px;
+    border-radius:30px;
+
+    background:#fff7ed;
+    color:#ea580c;
+    border:1px solid #fed7aa;
+
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:13px;
+}
+
+.status-sheet h1{
+    color:#111827;
+    font-size:25px;
+    line-height:1.25;
+    margin-bottom:10px;
+}
+
+.message{
+    max-width:350px;
+    margin:0 auto 22px;
+    color:#64748b;
+    font-size:14px;
+    line-height:1.6;
+}
+
+/* LOADING DOTS */
+
+.review-progress{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    margin-bottom:22px;
+}
+
+.progress-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#16a34a;
+    animation:dotPulse 1.2s ease-in-out infinite;
+}
+
+.progress-dot:nth-child(2){
+    animation-delay:.18s;
+}
+
+.progress-dot:nth-child(3){
+    animation-delay:.36s;
+}
+
+@keyframes dotPulse{
+    0%,100%{
+        opacity:.25;
+        transform:scale(.8);
+    }
+
+    50%{
+        opacity:1;
+        transform:scale(1.25);
+    }
+}
+
+/* DETAILS */
+
+.application-info{
+    width:100%;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:3px 16px;
+    text-align:left;
+}
+
+.info-row{
+    min-height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.info-row:last-child{
+    border-bottom:none;
+}
+
+.info-label{
+    color:#64748b;
+    font-size:13px;
+    font-weight:600;
+}
+
+.info-value{
+    color:#111827;
+    font-size:14px;
+    font-weight:800;
+    text-align:right;
+    overflow-wrap:anywhere;
+}
+
+/* BUTTONS */
+
+.action-btn{
+    width:100%;
+    height:50px;
+    margin-top:18px;
+    border:none;
+    border-radius:14px;
+    background:#16a34a;
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+    display:none;
+}
+
+.logout-btn{
+    width:100%;
+    height:46px;
+    margin-top:12px;
+    border:none;
+    border-radius:14px;
+    background:#f1f5f9;
+    color:#475569;
+    font-size:14px;
+    font-weight:750;
+    cursor:pointer;
+    display:none;
+}
+
+.action-btn:active,
+.logout-btn:active{
+    transform:scale(.98);
+}
+
+.support-text{
+    margin-top:17px;
+    color:#94a3b8;
+    font-size:12px;
+    line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="verification-page">
+
+    <div class="top-area">
+
+    <div class="top-image-box">
+        <img src="ver.png" alt="Delivery Partner">
+    </div>
+
+</div>
+
+    <div class="status-sheet">
+
+        <div class="sheet-handle"></div>
+
+        <div class="status-icon-wrapper">
+
+            <div
+                id="statusIcon"
+                class="status-icon pending">
+                …
+            </div>
+
+        </div>
+
+        <div
+            class="status-badge"
+            id="statusBadge">
+            Checking Status
+        </div>
+
+        <h1 id="statusTitle">
+            Checking Application
+        </h1>
+
+        <p class="message" id="statusMessage">
+            Please wait while we check your latest application status.
+        </p>
+
+        <div
+            class="review-progress"
+            id="reviewProgress">
+
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+
+        </div>
+
+        <div class="application-info">
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Mobile Number
+                </span>
+
+                <span
+                    class="info-value"
+                    id="mobileText">
+                    Loading...
+                </span>
+
+            </div>
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Application Status
+                </span>
+
+                <span
+                    class="info-value"
+                    id="statusText">
+                    Loading...
+                </span>
+
+            </div>
+
+        </div>
+
+        <button
+            class="action-btn"
+            id="applyBtn"
+            onclick="goToDocument()">
+            Complete Application
+        </button>
+
+        <button
+            class="action-btn"
+            id="doneBtn"
+            onclick="goToDashboard()">
+            Continue
+        </button>
+
+        <button
+            class="logout-btn"
+            id="logoutBtn"
+            onclick="logoutUser()">
+            Logout
+        </button>
+
+        <p class="support-text">
+    We'll notify you via WhatsApp or phone call once your verification is complete.
+</p>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL =
+    "https://fraonjwuarhkwakuitbv.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_30MjlIPaYGp3HS0wk7kGbQ_JO7hYUjS";
+
+const sb = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+const params =
+    new URLSearchParams(window.location.search);
+
+let savedMobile =
+    params.get("mobile");
+
+if(!savedMobile){
+    window.location.href = "index.html";
+}
+
+localStorage.setItem(
+    "partner_mobile",
+    savedMobile
+);
+
+const statusIcon =
+    document.getElementById("statusIcon");
+
+const statusBadge =
+    document.getElementById("statusBadge");
+
+const statusTitle =
+    document.getElementById("statusTitle");
+
+const statusMessage =
+    document.getElementById("statusMessage");
+
+const mobileText =
+    document.getElementById("mobileText");
+
+const statusText =
+    document.getElementById("statusText");
+
+const reviewProgress =
+    document.getElementById("reviewProgress");
+
+const applyBtn =
+    document.getElementById("applyBtn");
+
+const doneBtn =
+    document.getElementById("doneBtn");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+mobileText.innerText = savedMobile;
+
+function hideAllButtons(){
+
+    applyBtn.style.display = "none";
+    doneBtn.style.display = "none";
+    logoutBtn.style.display = "none";
+}
+
+async function checkApplicationStatus(){
+
+    hideAllButtons();
+
+    const { data, error } = await sb
+        .from("delivery_partner_applications")
+        .select("mobile,status,created_at")
+        .eq("mobile", savedMobile)
+        .order("created_at", {
+            ascending:false
+        })
+        .limit(1)
+        .maybeSingle();
+
+    if(error){
+
+        statusIcon.className =
+            "status-icon rejected";
+
+        statusIcon.innerText = "!";
+
+        statusBadge.innerText =
+            "Unable To Check";
+
+        statusTitle.innerText =
+            "Something Went Wrong";
+
+        statusMessage.innerText =
+            error.message;
+
+        statusText.innerText =
+            "ERROR";
+
+        reviewProgress.style.display =
+            "none";
+
+        logoutBtn.style.display =
+            "block";
+
+        return;
+    }
+
+    if(!data){
+
+        window.location.href =
+            "document.html?mobile=" +
+            encodeURIComponent(savedMobile);
+
+        return;
+    }
+
+    const status =
+        (data.status || "pending")
+        .toLowerCase()
+        .trim();
+
+    statusText.innerText =
+        status.toUpperCase();
+
+    if(status === "pending"){
+
+        statusIcon.className =
+            "status-icon pending";
+
+       statusIcon.className =
+    "status-icon pending tick-loop";
+
+statusIcon.innerHTML = "✓";
+
+        statusBadge.innerText =
+            "Under Review";
+
+        statusTitle.innerText =
+            "Verification Pending";
+
+        statusMessage.innerText =
+            "Your application has been received. Our team is reviewing your submitted documents.";
+
+        reviewProgress.style.display =
+            "flex";
+
+        logoutBtn.style.display =
+            "block";
+    }
+
+    else if(status === "approved"){
+
+        window.location.replace(
+            "order.html"
+        );
+
+        return;
+    }
+
+    else if(status === "rejected"){
+
+        statusIcon.className =
+            "status-icon rejected";
+
+        statusIcon.innerText = "×";
+
+        statusBadge.innerText =
+            "Action Required";
+
+        statusTitle.innerText =
+            "Application Rejected";
+
+        statusMessage.innerText =
+            "Your application could not be approved. Please contact CEZOO support.";
+
+        reviewProgress.style.display =
+            "none";
+
+        logoutBtn.style.display =
+            "block";
+    }
+
+    else{
+
+        statusIcon.className =
+            "status-icon pending";
+
+        statusIcon.innerText = "…";
+
+        statusBadge.innerText =
+            "Processing";
+
+        statusTitle.innerText =
+            "Application Processing";
+
+        statusMessage.innerText =
+            "Your latest application status is being processed.";
+
+        reviewProgress.style.display =
+            "flex";
+
+        logoutBtn.style.display =
+            "block";
+    }
+}
+
+function goToDocument(){
+
+    window.location.href =
+        "document.html?mobile=" +
+        encodeURIComponent(savedMobile);
+}
+
+function logoutUser(){
+
+    localStorage.removeItem(
+        "partner_mobile"
+    );
+
+    window.location.href =
+        "index.html";
+}
+
+function goToDashboard(){
+
+    window.location.href =
+        "order.html";
+}
+
+checkApplicationStatus();
+</script>
+
+</body>
+</html>

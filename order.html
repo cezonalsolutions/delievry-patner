@@ -1,0 +1,5340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+<title>CEZOO</title>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,sans-serif;
+}
+
+:root{
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-right:env(safe-area-inset-right,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+    --safe-left:env(safe-area-inset-left,0px);
+
+    --green:#16a34a;
+    --green-dark:#15803d;
+    --page:#f5f6f8;
+    --text:#111827;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    background:var(--page);
+    overflow-x:hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar{
+    width:100%;
+    height:calc(88px + var(--safe-top));
+
+    padding:
+        calc(var(--safe-top) + 20px)
+        20px
+        0
+        30px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:1000;
+
+    background:#fff;
+    border-bottom:1px solid #ececec;
+    box-shadow:0 4px 18px rgba(0,0,0,.05);
+}
+
+.logo{
+    font-family:"Bungee",sans-serif;
+    font-size:28px;
+    color:var(--green);
+    letter-spacing:.5px;
+}
+
+.profileBtn{
+    border:none;
+    background:transparent;
+    padding:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+}
+
+.profileBtn i{
+    font-size:24px;
+    color:#374151;
+}
+
+.profileBtn:hover i{
+    color:#111827;
+}
+
+.main{
+    min-height:100vh;
+    padding:
+        calc(112px + var(--safe-top))
+        16px
+        calc(30px + var(--safe-bottom));
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.main.duty-active{
+    display:block;
+}
+
+.dutyOrdersSection{
+    display:none;
+    width:100%;
+}
+
+.main.duty-active .dutyOrdersSection{
+    display:block;
+}
+
+.ordersHeader{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:14px;
+    text-align:center;
+}
+
+.ordersHeader > div{
+    width:100%;
+}
+
+.refreshOrdersBtn{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+.ordersHeader h1{
+    font-size:21px;
+    font-weight:800;
+    color:var(--text);
+}
+
+.ordersHeader p{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.refreshOrdersBtn{
+    width:42px;
+    height:42px;
+    flex-shrink:0;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    color:#374151;
+    cursor:pointer;
+}
+
+.refreshOrdersBtn.loading i{
+    animation:orderSpin .7s linear infinite;
+}
+
+@keyframes orderSpin{
+    to{transform:rotate(360deg);}
+}
+
+.ordersCountText{
+    margin-bottom:12px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+}.ordersCountText{
+    display:none !important;
+}
+
+.availableOrdersList{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+}
+
+
+.searchingOrders{
+    width:100%;
+    min-height:65vh;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+}
+
+.searchingIcon{
+    font-size:46px;
+    color:#16a34a;
+
+    margin-bottom:18px;
+
+    animation:searchScan 2s ease-in-out infinite;
+    transform-origin:center;
+}
+
+@keyframes searchScan{
+
+    0%{
+        transform:
+            translate(-18px,-8px)
+            rotate(-18deg);
+    }
+
+    20%{
+        transform:
+            translate(18px,-8px)
+            rotate(18deg);
+    }
+
+    40%{
+        transform:
+            translate(18px,8px)
+            rotate(18deg);
+    }
+
+    60%{
+        transform:
+            translate(-18px,8px)
+            rotate(-18deg);
+    }
+
+    80%{
+        transform:
+            translate(0,0)
+            rotate(0deg);
+    }
+
+    100%{
+        transform:
+            translate(-18px,-8px)
+            rotate(-18deg);
+    }
+}
+
+.searchingOrders h3{
+    margin:0 0 8px;
+    font-size:20px;
+    font-weight:800;
+    color:#111827;
+}
+
+.searchingOrders p{
+    max-width:270px;
+    color:#6b7280;
+    font-size:13px;
+    line-height:1.6;
+}
+.ordersShimmer{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.shimmerCard{
+    background:transparent;
+    border:none;
+    border-radius:0;
+    padding:0;
+    overflow:visible;
+}
+
+.shimmer{
+    position:relative;
+    overflow:hidden;
+    background:#fce7f3;
+    border-radius:10px;
+}
+
+.shimmer::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    transform:translateX(-100%);
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.85),
+        transparent
+    );
+    animation:pinkShimmer 1.2s infinite;
+}
+
+@keyframes pinkShimmer{
+    100%{
+        transform:translateX(100%);
+    }
+}
+
+.shimmerTitle{
+    width:45%;
+    height:18px;
+    margin-bottom:18px;
+}
+
+.shimmerRow{
+    width:100%;
+    height:14px;
+    margin-bottom:12px;
+}
+
+.shimmerRow.small{
+    width:55%;
+}
+
+.shimmerBox{
+    width:100%;
+    height:70px;
+    margin-top:12px;
+    border-radius:14px;
+}
+.orderCard{
+    padding:0;
+    border:none;
+    border-top:1px solid #e5e7eb;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+    padding-top:16px;
+}
+.orderGrid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+    margin-bottom:12px;
+}
+
+.orderBox{
+    min-height:80px;
+    padding:11px;
+    border-radius:13px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:#f7f8fa;
+}
+
+.orderBox.amount{
+    background:#effcf3;
+}
+
+.orderBox i{
+    margin-bottom:7px;
+    color:var(--green);
+    font-size:16px;
+}
+
+.orderLabel{
+    margin-bottom:4px;
+    color:#8b9098;
+    font-size:9px;
+    font-weight:700;
+}
+
+.orderValue{
+    color:#111827;
+    font-size:16px;
+    font-weight:800;
+    overflow-wrap:anywhere;
+}
+
+.orderBox.amount .orderValue{
+    color:#12813c;
+    font-size:20px;
+}
+
+.orderMapBtn{
+    width:100%;
+    height:44px;
+    margin-bottom:10px;
+    border:1px solid #dfe3e8;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:#fff;
+    color:#242830;
+    font-size:12px;
+    font-weight:800;
+    text-decoration:none;
+}
+
+.orderMapBtn.disabled{
+    opacity:.5;
+    pointer-events:none;
+}
+
+.orderActionBtn{
+    width:100%;
+    height:48px;
+    border:none;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:#fff;
+    background:var(--green);
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.orderActionBtn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.orderActionBtn.pickup{
+    background:#facc15;
+    color:#3f2d00;
+}
+
+.orderActionBtn.way{
+    background:#f97316;
+}
+
+.orderActionBtn.delivered{
+    background:#16a34a;
+}
+
+
+.orderTopBar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:13px;
+}
+
+.orderIdentity{
+    min-width:0;
+}
+
+.orderIdentity span{
+    display:block;
+    margin-bottom:4px;
+    color:#8b9098;
+    font-size:9px;
+    font-weight:700;
+}
+
+.orderIdentity strong{
+    display:block;
+    color:#111827;
+    font-size:13px;
+    font-weight:800;
+    overflow-wrap:anywhere;
+}
+
+.paymentBadge{
+    flex-shrink:0;
+    padding:6px 10px;
+    border-radius:999px;
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+}
+
+.paymentBadge.cash{
+    background:#dc2626;
+}
+
+.paymentBadge.upi{
+    background:#1677ff;
+}
+
+.customerStrip{
+    margin-bottom:12px;
+    padding:12px;
+    border-radius:13px;
+    background:#f7f8fa;
+}
+
+.customerStrip span{
+    display:block;
+    margin-bottom:4px;
+    color:#8b9098;
+    font-size:9px;
+    font-weight:700;
+}
+
+.customerStrip strong{
+    display:block;
+    color:#111827;
+    font-size:13px;
+    font-weight:800;
+}
+
+.productsPanel{
+    margin-bottom:12px;
+    padding:13px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+}
+
+.productsTitle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+    color:#111827;
+    font-size:12px;
+    font-weight:800;
+}
+
+.productsTitle i{
+    color:var(--green);
+}
+
+.productRows{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.productRow{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:12px;
+    align-items:center;
+    padding-bottom:9px;
+    border-bottom:1px solid #f0f1f3;
+}
+
+.productRow:last-child{
+    padding-bottom:0;
+    border-bottom:none;
+}
+
+
+.productMain{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.productImage{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+    border-radius:10px;
+    overflow:hidden;
+    background:#f3f4f6;
+    border:1px solid #eceff2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.productImage img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.productImageFallback{
+    color:#9ca3af;
+    font-size:18px;
+}
+
+
+.productName{
+    min-width:0;
+}
+
+.productName strong{
+    display:block;
+    color:#111827;
+    font-size:12px;
+    font-weight:800;
+    overflow-wrap:anywhere;
+}
+
+.productName span{
+    display:block;
+    margin-top:3px;
+    color:#6b7280;
+    font-size:10px;
+    font-weight:600;
+}
+
+.productPrice{
+    color:#111827;
+    font-size:12px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.billPanel{
+    margin-bottom:12px;
+    padding:13px;
+    border-radius:14px;
+    background:#f8f9fa;
+}
+
+.billRow{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:8px;
+    color:#6b7280;
+    font-size:11px;
+    font-weight:600;
+}
+
+.billRow:last-child{
+    margin-bottom:0;
+}
+
+.billRow strong{
+    color:#111827;
+    font-size:12px;
+}
+
+.billRow.total{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed #d1d5db;
+    color:#111827;
+    font-size:13px;
+    font-weight:800;
+}
+
+.billRow.total strong{
+    color:#12813c;
+    font-size:17px;
+}
+
+
+@media(max-width:360px){
+    .orderGrid{
+        grid-template-columns:1fr;
+    }
+}
+
+.startBtn{
+
+    width:220px;
+    height:56px;
+
+    border:none;
+    border-radius:16px;
+
+    background:#16a34a;
+    color:#fff;
+
+    font-size:16px;
+    font-weight:700;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    cursor:pointer;
+
+    box-shadow:0 12px 28px rgba(22,163,74,.28);
+
+    transition:.25s;
+}
+
+.startBtn:active{
+    transform:scale(.97);
+}
+
+.startBtn i{
+    font-size:16px;
+}
+
+/* =========================
+   PROFILE OVERLAY
+========================= */
+
+.profileOverlay{
+    position:fixed;
+    inset:0;
+    z-index:3000;
+
+    background:rgba(0,0,0,.42);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+.profileOverlay.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+/* =========================
+   PROFILE DRAWER
+========================= */
+
+.profileDrawer{
+    position:absolute;
+    top:0;
+    right:0;
+
+    width:min(88%,380px);
+    height:100dvh;
+
+   padding:
+        calc(32px + var(--safe-top))
+        calc(18px + var(--safe-right))
+        calc(18px + var(--safe-bottom))
+        18px;
+
+    display:flex;
+    flex-direction:column;
+
+    background:#fff;
+    box-shadow:-15px 0 40px rgba(0,0,0,.18);
+
+    transform:translateX(105%);
+
+    transition:
+        transform .32s cubic-bezier(.22,.8,.32,1);
+
+    overflow-y:auto;
+}
+
+.profileOverlay.open .profileDrawer{
+    transform:translateX(0);
+}
+
+/* =========================
+   DRAWER HEADER
+========================= */
+
+.profileDrawerHeader{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:20px;
+}
+
+.profileDrawerTitle{
+    font-size:18px;
+    font-weight:800;
+    color:var(--text);
+}
+
+.closeProfileBtn{
+    width:36px;
+    height:36px;
+
+    border:none;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f3f4f6;
+    color:#374151;
+
+    font-size:15px;
+    cursor:pointer;
+}
+
+/* =========================
+   USER CARD
+========================= */
+
+.profileUserCard{
+    padding:16px;
+
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    border-radius:18px;
+    background:#f7f8fa;
+
+    margin-bottom:13px;
+}
+
+.profileUserIcon{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#dcfce7;
+    color:var(--green-dark);
+
+    font-size:21px;
+}
+
+.profileUserDetails{
+    min-width:0;
+}
+
+.profileUserDetails h2{
+    margin-bottom:5px;
+
+    font-size:16px;
+    font-weight:800;
+    color:var(--text);
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.profileUserDetails p{
+    color:var(--muted);
+    font-size:12px;
+    font-weight:500;
+}
+
+/* =========================
+   EARNINGS CARD
+========================= */
+.customerMobileStrip{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.customerMobileStrip > div{
+    min-width:0;
+}
+
+.customerCallBtn{
+    min-width:82px;
+    height:40px;
+    padding:0 14px;
+
+    border-radius:12px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+
+    background:#16a34a;
+    color:#fff;
+
+    font-size:12px;
+    font-weight:800;
+    text-decoration:none;
+
+    flex-shrink:0;
+}
+
+.customerCallBtn:active{
+    transform:scale(.96);
+}
+.earningsCard{
+    padding:17px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #16a34a,
+            #22c55e
+        );
+
+    color:#fff;
+
+    margin-bottom:16px;
+}
+
+.earningsLeft span{
+    display:block;
+
+    margin-bottom:6px;
+
+    font-size:11px;
+    font-weight:600;
+
+    opacity:.85;
+}
+
+.earningsLeft strong{
+    font-size:24px;
+    font-weight:800;
+}
+
+.earningsIcon{
+    width:46px;
+    height:46px;
+
+    border-radius:15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(255,255,255,.17);
+
+    font-size:20px;
+}
+
+/* =========================
+   PROFILE MENU
+========================= */
+
+.profileMenu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.profileMenuItem{
+    width:100%;
+    min-height:52px;
+
+    padding:0 14px;
+
+    border:none;
+    border-radius:14px;
+
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    background:#f8f9fa;
+    color:var(--text);
+
+    text-align:left;
+    cursor:pointer;
+}
+.billRow.earningTotal{
+    margin-top:12px;
+    padding:12px;
+    border-radius:12px;
+    background:#ecfdf3;
+    color:#15803d;
+    font-size:13px;
+    font-weight:800;
+}
+
+.billRow.earningTotal strong{
+    color:#15803d;
+    font-size:18px;
+}
+.profileMenuIcon{
+    width:34px;
+    height:34px;
+    flex-shrink:0;
+
+    border-radius:10px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#eefcf3;
+    color:var(--green);
+
+    font-size:14px;
+}
+
+.profileMenuText{
+    flex:1;
+    font-size:13px;
+    font-weight:700;
+}
+
+.profileMenuArrow{
+    color:#9ca3af;
+    font-size:11px;
+}
+
+.profileMenuItem:active{
+    transform:scale(.985);
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+.profileLogoutWrap{
+    margin-top:auto;
+    padding-top:20px;
+}
+
+.logoutBtn{
+    width:100%;
+    height:50px;
+
+    border:none;
+    border-radius:14px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+
+    background:#fee2e2;
+    color:#dc2626;
+
+    font-size:13px;
+    font-weight:800;
+
+    cursor:pointer;
+}
+
+.logoutBtn:active{
+    transform:scale(.985);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px){
+
+    .navbar{
+        padding:
+            var(--safe-top)
+            calc(20px + var(--safe-right))
+            0
+            calc(20px + var(--safe-left));
+    }
+
+    .logo{
+        font-size:24px;
+    }
+
+    .profileDrawer{
+        width:88%;
+    }
+}
+.dutyTimer{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+
+    margin-left:auto;
+    margin-right:18px;
+}
+
+.dutyTimerRow{
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    color:#16a34a;
+    font-size:14px;
+    font-weight:800;
+}
+
+.dutyTimerRow i{
+    font-size:14px;
+}
+
+.endDutyBtn{
+    border:none;
+    background:transparent;
+    padding:0;
+
+    color:#dc2626;
+    font-size:10px;
+    font-weight:800;
+
+    cursor:pointer;
+}
+
+.endDutyBtn:active{
+    transform:scale(.95);
+}
+/* =========================================
+   DELIVERY PROOF SHEET
+========================================= */
+
+.deliveryProofOverlay,
+.deliveryEarningOverlay{
+    position:fixed;
+    inset:0;
+    z-index:5000;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+
+    padding-top:var(--safe-top);
+
+    background:rgba(0,0,0,.48);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+.deliveryProofOverlay.open,
+.deliveryEarningOverlay.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.deliveryProofSheet,
+.deliveryEarningSheet{
+    width:100%;
+    max-width:540px;
+
+    padding:
+        10px
+        18px
+        calc(20px + var(--safe-bottom));
+
+    border-radius:26px 26px 0 0;
+
+    background:#fff;
+
+    transform:translateY(105%);
+
+    transition:
+        transform .32s cubic-bezier(.22,.8,.32,1);
+}
+
+.deliveryProofOverlay.open .deliveryProofSheet,
+.deliveryEarningOverlay.open .deliveryEarningSheet{
+    transform:translateY(0);
+}
+
+.proofHandle{
+    width:42px;
+    height:5px;
+
+    margin:0 auto 17px;
+
+    border-radius:999px;
+    background:#d1d5db;
+}
+
+.proofHeader{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+
+    margin-bottom:18px;
+}
+
+.proofHeader h2{
+    margin-bottom:5px;
+
+    color:#111827;
+    font-size:19px;
+    font-weight:800;
+}
+
+.proofHeader p{
+    color:#6b7280;
+    font-size:12px;
+}
+
+.proofCloseBtn{
+    width:36px;
+    height:36px;
+    flex-shrink:0;
+
+    border:none;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f3f4f6;
+    color:#374151;
+
+    cursor:pointer;
+}
+
+.deliveryProofUpload{
+    width:100%;
+    min-height:210px;
+
+    margin-bottom:16px;
+
+    border:2px dashed #bbf7d0;
+    border-radius:20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    background:#f0fdf4;
+    cursor:pointer;
+}
+
+.deliveryProofPlaceholder{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+
+    text-align:center;
+}
+
+.deliveryProofPlaceholder i{
+    width:54px;
+    height:54px;
+
+    border-radius:17px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#dcfce7;
+    color:#16a34a;
+
+    font-size:21px;
+}
+
+.deliveryProofPlaceholder strong{
+    color:#111827;
+    font-size:14px;
+    font-weight:800;
+}
+
+.deliveryProofPlaceholder span{
+    color:#6b7280;
+    font-size:11px;
+}
+
+.deliveryProofPreview{
+    display:none;
+
+    width:100%;
+    height:250px;
+
+    object-fit:cover;
+}
+
+.submitDeliveryProofBtn{
+    width:100%;
+    height:52px;
+
+    border:none;
+    border-radius:15px;
+
+    background:#16a34a;
+    color:#fff;
+
+    font-size:14px;
+    font-weight:800;
+
+    cursor:pointer;
+}
+
+.submitDeliveryProofBtn:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+}
+
+
+/* =========================================
+   COMPLETED EARNING SHEET
+========================================= */
+
+.deliveryEarningSheet{
+    padding-top:30px;
+    padding-bottom:calc(34px + var(--safe-bottom));
+
+    text-align:center;
+}
+
+.earningSuccessIcon{
+    width:68px;
+    height:68px;
+
+    margin:0 auto 16px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#dcfce7;
+    color:#16a34a;
+
+    font-size:27px;
+}
+
+.deliveryEarningSheet > span{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#16a34a;
+    font-size:12px;
+    font-weight:800;
+}
+
+.deliveryEarningSheet h2{
+    margin-bottom:6px;
+
+    color:#111827;
+    font-size:17px;
+    font-weight:800;
+}
+
+.deliveryEarningSheet > strong{
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#16a34a;
+    font-size:34px;
+    font-weight:800;
+}
+
+.deliveryEarningSheet p{
+    color:#6b7280;
+    font-size:12px;
+}
+/* =========================================
+   TERMS & POLICY FULL PAGE
+========================================= */
+
+.policyPage{
+    position:fixed;
+    inset:0;
+    z-index:6000;
+
+    width:100%;
+    height:100dvh;
+
+    background:#f5f6f8;
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transform:translateX(100%);
+
+    transition:
+        transform .32s cubic-bezier(.22,.8,.32,1),
+        opacity .2s ease,
+        visibility .2s ease;
+
+    overflow:hidden;
+}
+
+.policyPage.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translateX(0);
+}
+
+.policyHeader{
+    width:100%;
+    height:calc(72px + var(--safe-top));
+
+    padding:
+        var(--safe-top)
+        calc(16px + var(--safe-right))
+        0
+        calc(16px + var(--safe-left));
+
+    display:grid;
+    grid-template-columns:44px 1fr 44px;
+    align-items:center;
+
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:2;
+
+    background:#fff;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.policyHeader h1{
+    text-align:center;
+    color:#111827;
+    font-size:17px;
+    font-weight:800;
+}
+
+.policyBackBtn{
+    width:40px;
+    height:40px;
+
+    border:none;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f3f4f6;
+    color:#111827;
+
+    font-size:15px;
+    cursor:pointer;
+}
+
+.policyBackBtn:active{
+    transform:scale(.94);
+}
+
+.policyHeaderSpace{
+    width:40px;
+}
+
+.policyContent{
+    width:100%;
+    height:100%;
+    overflow-y:auto;
+
+    padding:
+        calc(88px + var(--safe-top))
+        20px
+        calc(30px + var(--safe-bottom));
+}
+
+.policyContent h2{
+    margin-bottom:18px;
+
+    color:#111827;
+    font-size:20px;
+    font-weight:800;
+}
+
+.policyList{
+    margin:0;
+    padding-left:22px;
+
+    color:#374151;
+}
+
+.policyList li{
+    margin-bottom:16px;
+
+    font-size:14px;
+    line-height:1.8;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        CEZOO
+    </div>
+<div id="dutyTimer" class="dutyTimer">
+
+    <div class="dutyTimerRow">
+        <i class="fa-solid fa-stopwatch"></i>
+        <span id="dutyTime">00:00:00</span>
+    </div>
+
+    <button
+        id="endDutyBtn"
+        class="endDutyBtn"
+        type="button"
+        onclick="endDuty()"
+    >
+        End Duty
+    </button>
+
+</div>
+
+    <button
+        class="profileBtn"
+        type="button"
+        onclick="openProfile()"
+        aria-label="Profile"
+    >
+        <i class="fa-regular fa-circle-user"></i>
+    </button>
+
+</header>
+
+<div class="main">
+
+    <button
+        class="startBtn"
+        type="button"
+        onclick="startDuty()"
+    >
+        <i class="fa-solid fa-motorcycle"></i>
+        Start Duty
+    </button>
+
+    <section id="dutyOrdersSection" class="dutyOrdersSection">
+
+        <div class="ordersHeader">
+            <div>
+<h1 id="ordersHeaderTitle">Available Orders</h1>                
+            </div>
+
+            <button
+                id="refreshOrdersBtn"
+                class="refreshOrdersBtn"
+                type="button"
+                onclick="loadOrders()"
+                aria-label="Refresh orders"
+            >
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+
+        <div id="ordersCountText" class="ordersCountText">
+            0 orders available
+        </div>
+
+        <div id="availableOrdersList" class="availableOrdersList"></div>
+
+    </section>
+
+</div>
+
+<!-- PROFILE DRAWER -->
+
+<div
+    id="profileOverlay"
+    class="profileOverlay"
+>
+
+    <aside
+        class="profileDrawer"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="profileDrawerHeader">
+
+            <div class="profileDrawerTitle">
+                My Profile
+            </div>
+
+            <button
+                class="closeProfileBtn"
+                type="button"
+                onclick="closeProfile()"
+                aria-label="Close profile"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="profileUserCard">
+
+            <div class="profileUserIcon">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="profileUserDetails">
+
+                <h2 id="profileName">
+                    Delivery Partner
+                </h2>
+
+                <p id="profileMobile">
+                    +91 0000000000
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="earningsCard">
+
+            <div class="earningsLeft">
+
+                <span>Your Earnings</span>
+
+                <strong id="profileEarnings">
+                    ₹0
+                </strong>
+
+            </div>
+
+            <div class="earningsIcon">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+
+        </div>
+
+        <div class="profileMenu">
+
+            <button
+                class="profileMenuItem"
+                type="button"
+                onclick="openYourOrders()"
+            >
+
+                <span class="profileMenuIcon">
+                    <i class="fa-solid fa-box"></i>
+                </span>
+
+                <span class="profileMenuText">
+                    Your Orders
+                </span>
+
+                <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+            </button>
+
+            <button
+    class="profileMenuItem"
+    type="button"
+    onclick="openIDCard()"
+>
+
+    <span class="profileMenuIcon">
+        <i class="fa-solid fa-id-card"></i>
+    </span>
+
+    <span class="profileMenuText">
+        ID Card
+    </span>
+
+    <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+</button>
+<button
+    class="profileMenuItem"
+    type="button"
+    onclick="openCancelledOrders()"
+>
+
+    <span class="profileMenuIcon">
+        <i class="fa-solid fa-ban"></i>
+    </span>
+
+    <span class="profileMenuText">
+        Cancelled Orders
+    </span>
+
+    <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+</button>
+<button
+    class="profileMenuItem"
+    type="button"
+    onclick="openAttendance()"
+>
+
+    <span class="profileMenuIcon">
+        <i class="fa-solid fa-calendar-check"></i>
+    </span>
+
+    <span class="profileMenuText">
+        Attendance
+    </span>
+
+    <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+</button>
+            <button
+                class="profileMenuItem"
+                type="button"
+                onclick="openTerms()"
+            >
+
+                <span class="profileMenuIcon">
+                    <i class="fa-solid fa-file-contract"></i>
+                </span>
+
+                <span class="profileMenuText">
+                    Terms & Conditions
+                </span>
+
+                <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+            </button>
+
+            <button
+                class="profileMenuItem"
+                type="button"
+                onclick="openPrivacy()"
+            >
+
+                <span class="profileMenuIcon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+
+                <span class="profileMenuText">
+                    Privacy Policy
+                </span>
+
+                <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+            </button>
+<button
+    class="profileMenuItem"
+    type="button"
+    onclick="openFAQ()"
+>
+
+    <span class="profileMenuIcon">
+        <i class="fa-solid fa-circle-question"></i>
+    </span>
+
+    <span class="profileMenuText">
+        FAQ
+    </span>
+
+    <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+</button>
+            <button
+                class="profileMenuItem"
+                type="button"
+                onclick="openSupport()"
+            >
+
+                <span class="profileMenuIcon">
+                    <i class="fa-solid fa-headset"></i>
+                </span>
+
+                <span class="profileMenuText">
+                    Help & Support
+                </span>
+
+                <i class="fa-solid fa-chevron-right profileMenuArrow"></i>
+
+            </button>
+
+        </div>
+
+        <div class="profileLogoutWrap">
+
+            <button
+                class="logoutBtn"
+                type="button"
+                onclick="logoutUser()"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+</div>
+
+<!-- TERMS & CONDITIONS FULL PAGE -->
+
+<div
+    id="termsPage"
+    class="policyPage"
+>
+    <div class="policyHeader">
+
+        <button
+            class="policyBackBtn"
+            type="button"
+            onclick="closeTerms()"
+            aria-label="Close Terms and Conditions"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <h1>Terms & Conditions</h1>
+
+        <span class="policyHeaderSpace"></span>
+
+    </div>
+
+    
+
+        <div class="policyContent">
+
+
+    <ol class="policyList">
+
+        <li>
+            By using the CEZOO Delivery Partner application, you agree to follow all company policies and these Terms & Conditions.
+        </li>
+
+        <li>
+            Your delivery partner account is personal and must not be shared with any other person.
+        </li>
+
+        <li>
+            Orders may only be accepted while you are on duty.
+        </li>
+
+        <li>
+            After accepting an order, you are responsible for delivering it safely and on time.
+        </li>
+
+        <li>
+            Customer names, addresses, phone numbers and locations must only be used for completing deliveries.
+        </li>
+
+        <li>
+            Customer information must never be copied, shared or misused.
+        </li>
+
+        <li>
+            Live location may be collected while an active delivery is in progress for tracking purposes.
+        </li>
+
+        <li>
+            Delivery proof photos, when provided, must relate only to the completed order.
+        </li>
+
+        <li>
+            Handle all products carefully to avoid damage or loss.
+        </li>
+
+        <li>
+            Collect only the amount displayed in the application for Cash on Delivery orders.
+        </li>
+
+        <li>
+            Delivery earnings are calculated based on delivery distance, item bonuses and customer tips.
+        </li>
+
+        <li>
+            Fraudulent activities, fake deliveries, false proof uploads or misuse of the application may result in permanent account suspension.
+        </li>
+
+        <li>
+            Follow all traffic rules and drive safely while delivering orders.
+        </li>
+
+        <li>
+            CEZOO may update these Terms & Conditions at any time. Continued use of the application indicates your acceptance of those updates.
+        </li>
+
+    </ol>
+
+</div>
+</div>
+<!-- DELIVERY PROOF BOTTOM SHEET -->
+
+<div
+    id="deliveryProofOverlay"
+    class="deliveryProofOverlay"
+>
+    <div
+        class="deliveryProofSheet"
+        onclick="event.stopPropagation()"
+    >
+        <div class="proofHandle"></div>
+
+        <div class="proofHeader">
+            <div>
+                <h2>Delivery Proof</h2>
+                <p>Take a photo of the delivered order.</p>
+            </div>
+
+            <button
+                class="proofCloseBtn"
+                type="button"
+                onclick="closeDeliveryProofSheet()"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <label
+            id="deliveryProofUpload"
+            class="deliveryProofUpload"
+            for="deliveryProofInput"
+        >
+            <div
+                id="deliveryProofPlaceholder"
+                class="deliveryProofPlaceholder"
+            >
+                <i class="fa-solid fa-camera"></i>
+                <strong>Take Photo</strong>
+                <span>Tap to open camera</span>
+            </div>
+
+            <img
+                id="deliveryProofPreview"
+                class="deliveryProofPreview"
+                alt="Delivery proof"
+            >
+        </label>
+
+        <input
+            id="deliveryProofInput"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+        >
+
+        <button
+            id="submitDeliveryProofBtn"
+            class="submitDeliveryProofBtn"
+            type="button"
+            onclick="submitDeliveredOrder()"
+        >
+            Submit
+        </button>
+    </div>
+</div>
+
+
+<!-- EARNINGS SUCCESS BOTTOM SHEET -->
+
+<div
+    id="deliveryEarningOverlay"
+    class="deliveryEarningOverlay"
+>
+    <div class="deliveryEarningSheet">
+
+        <div class="earningSuccessIcon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <span>Order Delivered</span>
+
+        <h2>You earned</h2>
+
+        <strong id="completedOrderEarning">
+            ₹0
+        </strong>
+
+        <p>Getting your next order</p>
+
+    </div>
+</div>
+<script>
+
+/* =====================================================
+   SUPABASE CONNECTIONS
+===================================================== */
+
+const PARTNER_SUPABASE_URL =
+    "https://fraonjwuarhkwakuitbv.supabase.co";
+
+const PARTNER_SUPABASE_KEY =
+    "sb_publishable_30MjlIPaYGp3HS0wk7kGbQ_JO7hYUjS";
+
+const partnerSupabase =
+    window.supabase.createClient(
+        PARTNER_SUPABASE_URL,
+        PARTNER_SUPABASE_KEY
+    );
+
+
+const ORDERS_SUPABASE_URL =
+    "https://mglyaebackjtwbimvokm.supabase.co";
+
+const ORDERS_SUPABASE_KEY =
+    "sb_publishable_qMli5WhM2pMnT6_oUsFe4Q_Fzq_-YuB";
+
+const ordersSupabase =
+    window.supabase.createClient(
+        ORDERS_SUPABASE_URL,
+        ORDERS_SUPABASE_KEY
+    );
+
+console.log("✅ CEZOO Supabase connected");
+
+
+/* =====================================================
+   DELIVERY PARTNER + ONE ORDER LOGIC
+===================================================== */
+let deliveryProofOrderIndex = null;
+let deliveryProofImageData = "";
+let deliveryProofSubmitting = false;
+let deliveryEarningCloseTimer = null;
+let currentDeliveryBoy = null;
+let availableOrders = [];
+let myOrders = [];
+let activeOrders = [];
+let visibleOrders = [];
+let ordersRealtimeChannel = null;
+let ordersReloadTimer = null;
+let ignoreLocationRealtimeUntil = 0;
+/* Cache product rows fetched from Supabase */
+const deliveryProductCache = {};
+
+const availableOrdersList =
+    document.getElementById("availableOrdersList");
+
+const refreshOrdersBtn =
+    document.getElementById("refreshOrdersBtn");
+
+
+function escapeHtml(value){
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+function formatMoney(value){
+    const number = Number(value);
+
+    return new Intl.NumberFormat("en-IN",{
+        style:"currency",
+        currency:"INR",
+        maximumFractionDigits:2
+    }).format(Number.isFinite(number) ? number : 0);
+}
+
+
+function hasCustomerLocation(order){
+    const latitude = Number(order.latitude);
+    const longitude = Number(order.longitude);
+
+    return (
+        Number.isFinite(latitude) &&
+        Number.isFinite(longitude) &&
+        latitude !== 0 &&
+        longitude !== 0
+    );
+}
+
+
+function getMapUrl(order){
+    if(!hasCustomerLocation(order)){
+        return "#";
+    }
+
+    return (
+        "https://www.google.com/maps?q=" +
+        encodeURIComponent(order.latitude) +
+        "," +
+        encodeURIComponent(order.longitude)
+    );
+}
+
+
+function getDistanceText(order){
+    const distance = Number(order.delivery_distance);
+
+    return Number.isFinite(distance) && distance >= 0
+        ? distance.toFixed(2) + " km"
+        : "Not available";
+}
+
+
+function getOrderItems(order){
+
+    let items = order.items;
+
+    if(typeof items === "string"){
+        try{
+            items = JSON.parse(items);
+        }catch(error){
+            items = [];
+        }
+    }
+
+    return Array.isArray(items) ? items : [];
+}
+
+
+function getItemQuantity(item){
+
+    const quantity =
+        Number(
+            item.qty ??
+            item.quantity ??
+            item.count ??
+            1
+        );
+
+    return Number.isFinite(quantity) && quantity > 0
+        ? quantity
+        : 1;
+}
+
+
+function getItemUnitPrice(item){
+
+    const price =
+        Number(
+            item.discount_price ??
+            item.price ??
+            item.unit_price ??
+            item.selling_price ??
+            item.final_price ??
+            0
+        );
+
+    return Number.isFinite(price) ? price : 0;
+}
+
+
+
+function getItemImage(item){
+
+    return (
+        item.image1 ||
+        item.image ||
+        item.image_url ||
+        item.product_image ||
+        item.productImage ||
+        item.thumbnail ||
+        item.photo ||
+        item.photo_url ||
+        ""
+    );
+}
+
+
+function getItemName(item){
+
+    return (
+        item.name ||
+        item.product_name ||
+        item.productName ||
+        item.title ||
+        item.item_name ||
+        (
+            item.product_id
+                ? "Product " + item.product_id
+                : "Product"
+        )
+    );
+}
+
+
+function getItemUnitText(item){
+
+    return (
+        item.unit ||
+        item.quantity_text ||
+        item.size ||
+        ""
+    );
+}
+
+
+function getCalculatedItemsTotal(order){
+
+    const storedTotal =
+        Number(
+            order.item_total ??
+            order.items_total ??
+            order.subtotal
+        );
+
+    if(Number.isFinite(storedTotal)){
+        return storedTotal;
+    }
+
+    return getOrderItems(order)
+        .reduce(function(total,item){
+
+            return total +
+                (
+                    getItemUnitPrice(item) *
+                    getItemQuantity(item)
+                );
+
+        },0);
+}
+
+
+
+function getFinalOrderTotal(order){
+
+    const storedTotal =
+        Number(
+            order.total_amount ??
+            order.total_to_pay ??
+            order.grand_total
+        );
+
+    const tip =
+        Number(
+            order.delivery_tip ??
+            order.delivery_partner_tip ??
+            order.tip ??
+            0
+        );
+
+    const baseTotal =
+        Number.isFinite(storedTotal)
+            ? storedTotal
+            : getCalculatedItemsTotal(order);
+
+    /*
+      Your total_amount normally already contains the tip,
+      so return it directly when available.
+    */
+    if(Number.isFinite(storedTotal)){
+        return storedTotal;
+    }
+
+    return baseTotal + tip;
+}
+
+/* =====================================================
+   LOAD REAL PRODUCT DETAILS
+   Order items may contain only product_id + product_table.
+===================================================== */
+
+async function loadDeliveryProductDetails(items){
+
+    if(!Array.isArray(items) || items.length === 0){
+        return [];
+    }
+
+    const groupedItems = {};
+    const directItems = [];
+
+    items.forEach(function(item){
+
+        const tableName =
+            String(
+                item.product_table ||
+                item.table_name ||
+                item.table ||
+                ""
+            ).trim();
+
+        const productId =
+            Number(
+                item.product_id ??
+                item.id
+            );
+
+        /*
+          Only skip the Supabase lookup when a REAL name or image
+          is already saved inside the order item.
+
+          Do not use getItemName() here because it creates fallback
+          names such as "Product 3", which are not real product names.
+        */
+        const hasSavedProductName =
+            Boolean(
+                String(
+                    item.name ||
+                    item.product_name ||
+                    item.productName ||
+                    item.title ||
+                    item.item_name ||
+                    ""
+                ).trim()
+            );
+
+        const hasSavedProductImage =
+            Boolean(
+                String(
+                    item.image1 ||
+                    item.image ||
+                    item.image_url ||
+                    item.product_image ||
+                    item.productImage ||
+                    item.thumbnail ||
+                    item.photo ||
+                    item.photo_url ||
+                    ""
+                ).trim()
+            );
+
+        if(hasSavedProductName || hasSavedProductImage){
+            directItems.push({
+                ...item,
+                ordered_qty:getItemQuantity(item)
+            });
+            return;
+        }
+
+        if(!tableName || !Number.isFinite(productId)){
+            directItems.push({
+                ...item,
+                ordered_qty:getItemQuantity(item)
+            });
+            return;
+        }
+
+        if(!groupedItems[tableName]){
+            groupedItems[tableName] = [];
+        }
+
+        groupedItems[tableName].push({
+            original_item:item,
+            product_id:productId,
+            qty:getItemQuantity(item)
+        });
+    });
+
+    const loadedProducts = [];
+
+    for(const [tableName, tableItems] of Object.entries(groupedItems)){
+
+        const ids = [
+            ...new Set(
+                tableItems.map(function(item){
+                    return item.product_id;
+                })
+            )
+        ];
+
+        const idsToFetch =
+            ids.filter(function(id){
+                return !deliveryProductCache[`${tableName}_${id}`];
+            });
+
+        if(idsToFetch.length > 0){
+
+            const {data,error} =
+                await ordersSupabase
+                    .from(tableName)
+                    .select(`
+                        id,
+                        name,
+                        name_telugu,
+                        quantity,
+                        unit,
+                        original_price,
+                        discount_price,
+                        image1
+                    `)
+                    .in("id",idsToFetch);
+
+            if(error){
+                console.error(
+                    `Product fetch failed from ${tableName}:`,
+                    error
+                );
+            }else{
+                (data || []).forEach(function(product){
+                    deliveryProductCache[
+                        `${tableName}_${product.id}`
+                    ] = {
+                        ...product,
+                        product_table:tableName
+                    };
+                });
+            }
+        }
+
+        tableItems.forEach(function(savedItem){
+
+            const product =
+                deliveryProductCache[
+                    `${tableName}_${savedItem.product_id}`
+                ];
+
+            if(product){
+                loadedProducts.push({
+                    ...savedItem.original_item,
+                    ...product,
+                    qty:savedItem.qty,
+                    ordered_qty:savedItem.qty
+                });
+            }else{
+                loadedProducts.push({
+                    ...savedItem.original_item,
+                    product_id:savedItem.product_id,
+                    product_table:tableName,
+                    qty:savedItem.qty,
+                    ordered_qty:savedItem.qty
+                });
+            }
+        });
+    }
+
+    /*
+      Preserve the original order of items.
+    */
+    return items.map(function(originalItem){
+
+        const originalTable =
+            String(
+                originalItem.product_table ||
+                originalItem.table_name ||
+                originalItem.table ||
+                ""
+            ).trim();
+
+        const originalId =
+            Number(
+                originalItem.product_id ??
+                originalItem.id
+            );
+
+        const loadedMatch =
+            loadedProducts.find(function(product){
+                return (
+                    String(product.product_table || "") === originalTable &&
+                    Number(product.id ?? product.product_id) === originalId
+                );
+            });
+
+        if(loadedMatch){
+            return loadedMatch;
+        }
+
+        const directIndex =
+            directItems.findIndex(function(item){
+                return item === originalItem ||
+                    (
+                        Number(item.product_id ?? item.id) === originalId &&
+                        String(
+                            item.product_table ||
+                            item.table_name ||
+                            item.table ||
+                            ""
+                        ).trim() === originalTable
+                    );
+            });
+
+        if(directIndex >= 0){
+            return directItems[directIndex];
+        }
+
+        return originalItem;
+    });
+}
+
+
+async function prepareOrderProducts(order){
+
+    const savedItems = getOrderItems(order);
+
+    try{
+        const completeItems =
+            await loadDeliveryProductDetails(savedItems);
+
+        return {
+            ...order,
+            items:completeItems
+        };
+    }catch(error){
+        console.error("Prepare order products error:",error);
+        return order;
+    }
+}
+
+
+function renderOrderProducts(order){
+
+    const items =
+        getOrderItems(order);
+
+    if(items.length === 0){
+        return `
+            <div class="productsPanel">
+                <div class="productsTitle">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    Products
+                </div>
+
+                <div class="productRows">
+                    <div class="productRow">
+                        <div class="productName">
+                            <strong>Product details unavailable</strong>
+                            <span>No item data found in this order.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="productsPanel">
+
+            <div class="productsTitle">
+                <i class="fa-solid fa-basket-shopping"></i>
+                Products (${items.length})
+            </div>
+
+            <div class="productRows">
+
+                ${items.map(function(item){
+
+                    const quantity =
+                        getItemQuantity(item);
+
+                    const unitPrice =
+                        getItemUnitPrice(item);
+
+                    const lineTotal =
+                        quantity * unitPrice;
+
+                    const packText =
+    [
+        item.quantity,
+        item.unit
+    ]
+    .filter(Boolean)
+    .join(" ");
+
+const unitText =
+    packText ||
+    getItemUnitText(item);
+                    return `
+                        <div class="productRow">
+
+                            <div class="productMain">
+
+                                <div class="productImage">
+
+                                    ${
+                                        getItemImage(item)
+                                            ? `
+                                                <img
+                                                    src="${escapeHtml(getItemImage(item))}"
+                                                    alt="${escapeHtml(getItemName(item))}"
+                                                    onerror="
+                                                        this.style.display='none';
+                                                        this.nextElementSibling.style.display='flex';
+                                                    "
+                                                >
+
+                                                <span
+                                                    class="productImageFallback"
+                                                    style="display:none"
+                                                >
+                                                    <i class="fa-solid fa-basket-shopping"></i>
+                                                </span>
+                                            `
+                                            : `
+                                                <span class="productImageFallback">
+                                                    <i class="fa-solid fa-basket-shopping"></i>
+                                                </span>
+                                            `
+                                    }
+
+                                </div>
+
+                                <div class="productName">
+
+                                  <strong>
+    ${escapeHtml(getItemName(item))}
+</strong>
+
+${unitText
+    ? `
+        <span>
+            ${escapeHtml(unitText)}
+        </span>
+    `
+    : ""
+}
+
+<span>
+    Quantity: ${quantity}
+</span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="productPrice">
+                                ${formatMoney(lineTotal)}
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("")}
+
+          </div>
+
+</div>
+    `;
+}
+function getTotalOrderedItems(order){
+
+    return getOrderItems(order)
+        .reduce(function(total,item){
+            return total + getItemQuantity(item);
+        },0);
+}
+
+
+function getDeliveryBoyEarning(order){
+
+    const distance =
+        Number(order.delivery_distance || 0);
+
+    const totalItems =
+        getTotalOrderedItems(order);
+
+    const deliveryTip =
+        Number(
+            order.delivery_tip ??
+            order.delivery_partner_tip ??
+            order.tip ??
+            0
+        );
+
+    let distanceEarning = 0;
+
+    /*
+      Distance earning rules
+    */
+
+    if(distance > 0 && distance < 1){
+        // 100 metres to 999 metres
+        distanceEarning = 12;
+
+    }else if(distance >= 1 && distance <= 3){
+        distanceEarning = 20;
+
+    }else if(distance > 3 && distance <= 6){
+        distanceEarning = 30;
+
+    }else if(distance > 6 && distance <= 8){
+        distanceEarning = 35;
+
+    }else if(distance > 8 && distance <= 12){
+        distanceEarning = 42;
+
+    }else if(distance > 12){
+        /*
+          ₹42 up to 12 km,
+          then ₹5 extra for every started additional kilometre.
+        */
+        distanceEarning =
+            42 +
+            (
+                Math.ceil(distance - 12) * 5
+            );
+    }
+
+    /*
+      Item quantity bonus:
+      1–5 items   = ₹0
+      6–9 items   = ₹3
+      10+ items   = ₹5
+    */
+
+    let itemBonus = 0;
+
+    if(totalItems >= 10){
+        itemBonus = 5;
+    }else if(totalItems > 5){
+        itemBonus = 3;
+    }
+
+    return {
+        distanceEarning,
+        itemBonus,
+        deliveryTip,
+        totalItems,
+        total:
+            distanceEarning +
+            itemBonus +
+            deliveryTip
+    };
+}
+
+function renderOrderBill(order){
+
+    const itemTotal =
+        getCalculatedItemsTotal(order);
+
+    const deliveryFee =
+        Number(order.delivery_fee || 0);
+
+    const handlingFee =
+        Number(order.handling_fee || 0);
+
+    const tip =
+    Number(
+        order.delivery_tip ??
+        order.delivery_partner_tip ??
+        order.tip ??
+        0
+    );
+const earning =
+    getDeliveryBoyEarning(order);
+  const storedFinalTotal =
+    Number(
+        order.total_amount ??
+        order.total_to_pay ??
+        order.grand_total
+    );
+
+const calculatedFinalTotal =
+    itemTotal +
+    deliveryFee +
+    handlingFee +
+    tip;
+
+const finalTotal =
+    Number.isFinite(storedFinalTotal)
+        ? storedFinalTotal
+        : calculatedFinalTotal;
+
+    return `
+        <div class="billPanel">
+
+            <div class="billRow">
+                <span>Item Total</span>
+                <strong>${formatMoney(itemTotal)}</strong>
+            </div>
+
+            <div class="billRow">
+                <span>Delivery Fee</span>
+                <strong>${formatMoney(deliveryFee)}</strong>
+            </div>
+
+            <div class="billRow">
+                <span>Handling Fee</span>
+                <strong>${formatMoney(handlingFee)}</strong>
+            </div>
+
+            ${tip > 0
+                ? `
+                    <div class="billRow">
+                        <span>Delivery Partner Tip</span>
+                        <strong>${formatMoney(tip)}</strong>
+                    </div>
+                `
+                : ""
+            }
+
+           <div class="billRow total">
+    <span>Total to Collect</span>
+    <strong>${formatMoney(finalTotal)}</strong>
+</div>
+
+<div class="billRow">
+    <span>Distance Earnings</span>
+    <strong>
+        ${formatMoney(earning.distanceEarning)}
+    </strong>
+</div>
+
+${
+    earning.itemBonus > 0
+        ? `
+            <div class="billRow">
+                <span>
+                    Item Bonus (${earning.totalItems} items)
+                </span>
+
+                <strong>
+                    +${formatMoney(earning.itemBonus)}
+                </strong>
+            </div>
+        `
+        : ""
+}
+
+${
+    earning.deliveryTip > 0
+        ? `
+            <div class="billRow">
+                <span>Tip Earnings</span>
+
+                <strong>
+                    +${formatMoney(earning.deliveryTip)}
+                </strong>
+            </div>
+        `
+        : ""
+}
+
+<div class="billRow earningTotal">
+    <span>Your Earnings</span>
+    <strong>${formatMoney(earning.total)}</strong>
+</div>
+
+        </div>
+    `;
+}
+
+
+
+function createDeliveryUuid(){
+    if(window.crypto?.randomUUID){
+        return window.crypto.randomUUID();
+    }
+
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+        .replace(/[xy]/g,function(character){
+            const random = Math.random() * 16 | 0;
+            const value =
+                character === "x"
+                    ? random
+                    : (random & 0x3 | 0x8);
+
+            return value.toString(16);
+        });
+}
+
+
+async function initializeDeliveryBoy(){
+
+    const mobile =
+        localStorage.getItem("partner_mobile");
+
+    if(!mobile){
+        console.error("partner_mobile is missing");
+        return false;
+    }
+
+    const {data,error} =
+        await partnerSupabase
+            .from("delivery_partner_applications")
+            .select("*")
+            .eq("mobile",mobile)
+            .order("created_at",{ascending:false})
+            .limit(1)
+            .maybeSingle();
+
+    if(error){
+        console.error("Partner verification error:",error);
+        return false;
+    }
+
+    if(!data){
+        console.error("Delivery partner not found");
+        return false;
+    }
+
+    const status =
+        String(data.status || "")
+            .toLowerCase()
+            .trim();
+
+    if(status !== "approved"){
+        console.error("Delivery partner is not approved");
+        return false;
+    }
+
+    let savedDeliveryBoy = null;
+
+    try{
+        savedDeliveryBoy =
+            JSON.parse(
+                localStorage.getItem("deliveryBoy") || "null"
+            );
+    }catch(error){
+        savedDeliveryBoy = null;
+    }
+
+    const deliveryBoyId =
+        savedDeliveryBoy?.id ||
+        localStorage.getItem("delivery_boy_uuid") ||
+        data.delivery_boy_uuid ||
+        data.id ||
+        createDeliveryUuid();
+
+    currentDeliveryBoy = {
+        id:deliveryBoyId,
+        name:data.full_name || "Delivery Partner",
+        mobile:data.mobile || mobile
+    };
+
+    localStorage.setItem(
+        "delivery_boy_uuid",
+        currentDeliveryBoy.id
+    );
+
+    localStorage.setItem(
+        "deliveryBoy",
+        JSON.stringify(currentDeliveryBoy)
+    );
+
+    document.getElementById("profileName").textContent =
+        currentDeliveryBoy.name;
+
+    document.getElementById("profileMobile").textContent =
+        "+91 " + currentDeliveryBoy.mobile;
+
+    return true;
+}
+
+
+function sortOrders(a,b){
+    return (
+        new Date(b.created_at).getTime() -
+        new Date(a.created_at).getTime()
+    );
+}
+
+
+async function loadOrders(){
+
+    if(!currentDeliveryBoy){
+        const verified =
+            await initializeDeliveryBoy();
+
+        if(!verified){
+            availableOrdersList.innerHTML = `
+                <div class="ordersState">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h3>Account not verified</h3>
+                    <p>Please log in with an approved delivery account.</p>
+                </div>
+            `;
+            return;
+        }
+    }
+
+    refreshOrdersBtn?.classList.add("loading");
+
+    availableOrdersList.innerHTML = getOrdersShimmer();
+
+    try{
+
+        const [
+            cashAvailableResponse,
+            upiAvailableResponse,
+            myCashResponse,
+            myUpiResponse
+        ] = await Promise.all([
+
+            ordersSupabase
+                .from("delivery_cash_orders")
+                .select("*")
+                .eq("delivery_boy_accepted",false)
+                .eq("delivery_status","assigned")
+                .order("created_at",{ascending:false}),
+
+            ordersSupabase
+                .from("delivery_upi_orders")
+                .select("*")
+                .eq("delivery_boy_accepted",false)
+                .eq("delivery_status","assigned")
+                .order("created_at",{ascending:false}),
+
+            ordersSupabase
+                .from("delivery_cash_orders")
+                .select("*")
+                .eq(
+                    "delivery_boy_mobile",
+                    currentDeliveryBoy.mobile
+                )
+                .order("created_at",{ascending:false}),
+
+            ordersSupabase
+                .from("delivery_upi_orders")
+                .select("*")
+                .eq(
+                    "delivery_boy_mobile",
+                    currentDeliveryBoy.mobile
+                )
+                .order("created_at",{ascending:false})
+        ]);
+
+        const responses = [
+            cashAvailableResponse,
+            upiAvailableResponse,
+            myCashResponse,
+            myUpiResponse
+        ];
+
+        const failed =
+            responses.find(item => item.error);
+
+        if(failed){
+            throw failed.error;
+        }
+
+        availableOrders = [
+            ...(cashAvailableResponse.data || []).map(order => ({
+                ...order,
+                _order_type:"cash"
+            })),
+            ...(upiAvailableResponse.data || []).map(order => ({
+                ...order,
+                _order_type:"upi"
+            }))
+        ].sort(sortOrders);
+
+        myOrders = [
+            ...(myCashResponse.data || []).map(order => ({
+                ...order,
+                _order_type:"cash"
+            })),
+            ...(myUpiResponse.data || []).map(order => ({
+                ...order,
+                _order_type:"upi"
+            }))
+        ].sort(sortOrders);
+
+        activeOrders =
+            myOrders.filter(function(order){
+                const status =
+                    String(order.delivery_status || "")
+                        .toLowerCase()
+                        .trim();
+
+                return ![
+                    "delivered",
+                    "cancelled"
+                ].includes(status);
+            });
+
+        await renderOneOrder();
+
+/*
+  Restore live tracking after page refresh when
+  an accepted, active order exists.
+*/
+const acceptedActiveOrder =
+    activeOrders.find(function(order){
+
+        const status =
+            String(order.delivery_status || "")
+                .toLowerCase()
+                .trim();
+
+        return (
+            order.delivery_boy_accepted === true &&
+            ![
+                "delivered",
+                "cancelled"
+            ].includes(status)
+        );
+    });
+
+if(acceptedActiveOrder){
+
+    const isSameTrackedOrder =
+        trackedDeliveryOrder &&
+        String(trackedDeliveryOrder.order_id) ===
+            String(acceptedActiveOrder.order_id);
+
+    if(!isSameTrackedOrder){
+        startDeliveryLocationTracking(
+            acceptedActiveOrder
+        );
+    }else{
+        trackedDeliveryOrder =
+            acceptedActiveOrder;
+    }
+
+}else{
+    stopDeliveryLocationTracking();
+}
+
+    }catch(error){
+
+        console.error("Load orders error:",error);
+
+        availableOrdersList.innerHTML = `
+            <div class="ordersState">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <h3>Could not load orders</h3>
+                <p>${escapeHtml(error.message || "Please try again.")}</p>
+            </div>
+        `;
+
+    }finally{
+        refreshOrdersBtn?.classList.remove("loading");
+    }
+}
+
+
+function getOrderAction(order,index){
+
+    const status =
+        String(order.delivery_status || "assigned")
+            .toLowerCase()
+            .trim();
+
+    const isMyOrder =
+        order.delivery_boy_accepted === true &&
+        String(order.delivery_boy_mobile || "") ===
+            String(currentDeliveryBoy?.mobile || "");
+
+    if(!isMyOrder){
+        return `
+            <button
+                class="orderActionBtn"
+                type="button"
+                onclick="acceptOrder(${index},this)"
+            >
+                
+                Accept Order
+            </button>
+        `;
+    }
+
+    if(status === "assigned" || status === "accepted"){
+        return `
+            <button
+                class="orderActionBtn pickup"
+                type="button"
+                onclick="updateDeliveryStatus(${index},'picked_up',this)"
+            >
+                <i class="fa-solid fa-box"></i>
+                Picked Up
+            </button>
+        `;
+    }
+
+    if(status === "picked_up"){
+        return `
+            <button
+                class="orderActionBtn way"
+                type="button"
+                onclick="updateDeliveryStatus(${index},'on_the_way',this)"
+            >
+                <i class="fa-solid fa-motorcycle"></i>
+                On The Way
+            </button>
+        `;
+    }
+
+    return `
+    <button
+        class="orderActionBtn delivered"
+        type="button"
+        onclick="openDeliveryProofSheet(${index})"
+    >
+        <i class="fa-solid fa-circle-check"></i>
+        Delivered
+    </button>
+`;
+}
+
+
+async function renderOneOrder(){
+
+    if(activeOrders.length > 0){
+        visibleOrders =
+            activeOrders.slice(0,1);
+
+        document.getElementById("ordersCountText").textContent =
+            "1 active order • Complete it to receive the next order";
+    }else{
+        visibleOrders =
+            availableOrders.slice(0,1);
+
+        document.getElementById("ordersCountText").textContent =
+            availableOrders.length +
+            " order" +
+            (availableOrders.length === 1 ? "" : "s") +
+            " waiting • Showing 1 order";
+    }
+document.getElementById("ordersHeaderTitle").style.display = "none";
+    if(visibleOrders.length === 0){
+
+        document.getElementById("ordersCountText").textContent =
+            "0 orders available";
+
+       availableOrdersList.innerHTML = `
+    <div class="searchingOrders">
+
+        <i class="fa fa-search searchingIcon"></i>
+
+        <h3>Searching for Orders...</h3>
+
+        <p>Stay online to receive new delivery requests.</p>
+
+    </div>
+`;
+
+        return;
+    }
+document.getElementById("ordersHeaderTitle").style.display = "";
+    /*
+      Fetch the actual product rows before rendering.
+      This supplies name, image1, quantity, unit and price.
+    */
+    visibleOrders =
+        await Promise.all(
+            visibleOrders.map(prepareOrderProducts)
+        );
+
+    availableOrdersList.innerHTML =
+        visibleOrders.map(function(order,index){
+
+            const mapAvailable =
+                hasCustomerLocation(order);
+
+            const paymentType =
+                order._order_type === "upi"
+                    ? "UPI"
+                    : "Cash on Delivery";
+
+            const paymentClass =
+                order._order_type === "upi"
+                    ? "upi"
+                    : "cash";
+
+            const customerName =
+                order.user_name ||
+                order.customer_name ||
+                order.name ||
+                "Customer";
+
+            return `
+                <article class="orderCard">
+
+                    <div class="orderTopBar">
+
+                        <div class="orderIdentity">
+                            <span>Order ID</span>
+                            <strong>
+                                ${escapeHtml(order.order_id || "—")}
+                            </strong>
+                        </div>
+
+                        <span class="paymentBadge ${paymentClass}">
+                            ${paymentType}
+                        </span>
+
+                    </div>
+
+                    <div class="customerStrip">
+                        <span>Customer</span>
+                        <strong>${escapeHtml(customerName)}</strong>
+                    </div>
+${
+    order.delivery_boy_accepted === true
+        ? (() => {
+
+            const customerMobile =
+                String(
+                    order.customer_mobile ||
+                    order.user_mobile ||
+                    order.mobile ||
+                    ""
+                )
+                .replace(/[^\d+]/g,"")
+                .trim();
+
+            return customerMobile
+                ? `
+                    <div class="customerStrip customerMobileStrip">
+
+                        <div>
+                            <span>Customer Mobile</span>
+
+                            <strong>
+                                ${escapeHtml(customerMobile)}
+                            </strong>
+                        </div>
+
+                        <a
+                            class="customerCallBtn"
+                            href="tel:${escapeHtml(customerMobile)}"
+                            aria-label="Call customer"
+                        >
+                            <i class="fa-solid fa-phone"></i>
+                            Call
+                        </a>
+
+                    </div>
+                `
+                : "";
+        })()
+        : ""
+}
+                    <div class="orderGrid">
+
+                        <div class="orderBox amount">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                            <span class="orderLabel">Total Amount</span>
+                            <strong class="orderValue">
+                                ${formatMoney(getFinalOrderTotal(order))}
+                            </strong>
+                        </div>
+
+                        <div class="orderBox">
+                            <i class="fa-solid fa-route"></i>
+                            <span class="orderLabel">Distance(From Store)</span>
+                            <strong class="orderValue">
+                                ${escapeHtml(getDistanceText(order))}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                   <div class="customerStrip">
+    <span>Delivery Type</span>
+    <strong>
+        ${
+            String(order.delivery_mode || "").toLowerCase() === "12_hours"
+                ? "Day Delivery"
+                : "Instant Delivery"
+        }
+    </strong>
+</div>
+
+${
+    Number(order.delivery_tip || order.delivery_partner_tip || 0) > 0
+        ? `
+            <div class="customerStrip">
+                <span>Delivery Partner Tip</span>
+                <strong>
+                    ${formatMoney(
+                        order.delivery_tip ||
+                        order.delivery_partner_tip
+                    )}
+                </strong>
+            </div>
+        `
+        : ""
+}
+
+${
+    Array.isArray(order.delivery_instructions)
+        ? order.delivery_instructions.length
+            ? `
+                <div class="customerStrip">
+                    <span>Delivery Instructions</span>
+                    <strong>
+                        ${order.delivery_instructions
+                            .map(escapeHtml)
+                            .join(", ")}
+                    </strong>
+                </div>
+            `
+            : ""
+        : (
+            String(order.delivery_instructions || "").trim()
+                ? `
+                    <div class="customerStrip">
+                        <span>Delivery Instructions</span>
+                        <strong>
+                            ${escapeHtml(order.delivery_instructions)}
+                        </strong>
+                    </div>
+                `
+                : ""
+        )
+}
+
+${renderOrderProducts(order)}
+                  ${renderOrderBill(order)}
+
+${
+    order.delivery_boy_accepted === true
+        ? (
+            mapAvailable
+                ? `
+                    <a
+                        class="orderMapBtn"
+                        href="${getMapUrl(order)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        View on Map
+                    </a>
+                `
+                : `
+                    <div class="orderMapBtn disabled">
+                        <i class="fa-solid fa-location-slash"></i>
+                        Location Not Available
+                    </div>
+                `
+        )
+        : ""
+}
+
+${getOrderAction(order,index)}
+
+                  
+
+                </article>
+            `;
+        }).join("");
+}
+
+
+window.acceptOrder =
+async function(index,button){
+
+    const order =
+        visibleOrders[index];
+
+    if(!order || !currentDeliveryBoy){
+        return;
+    }
+
+    button.disabled = true;
+
+    const oldHtml =
+        button.innerHTML;
+
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Accepting
+    `;
+
+    try{
+
+        const {data,error} =
+            await ordersSupabase.rpc(
+                "accept_delivery_order",
+                {
+                    p_order_id:String(order.order_id),
+                    p_order_type:order._order_type,
+                    p_delivery_boy_id:currentDeliveryBoy.id,
+                    p_delivery_boy_name:currentDeliveryBoy.name,
+                    p_delivery_boy_mobile:currentDeliveryBoy.mobile
+                }
+            );
+
+        if(error){
+            throw error;
+        }
+
+        if(data !== true){
+    await loadOrders();
+    return;
+}
+
+/*
+  Reload the accepted order first.
+*/
+await loadOrders();
+
+/*
+  Begin live location tracking for the accepted order.
+*/
+const acceptedOrder =
+    activeOrders.find(function(item){
+        return String(item.order_id) ===
+            String(order.order_id);
+    });
+
+if(acceptedOrder){
+
+    /*
+      Earnings are saved only after this
+      delivery partner accepts the order.
+    */
+    await saveAcceptedOrderDutyStats(
+        acceptedOrder
+    );
+
+    startDeliveryLocationTracking(
+        acceptedOrder
+    );
+}
+
+    }catch(error){
+
+        console.error("Accept order error:",error);
+
+        button.disabled = false;
+        button.innerHTML = oldHtml;
+    }
+};
+
+window.openDeliveryProofSheet =
+function(index){
+
+    const order =
+        visibleOrders[index];
+
+    if(!order){
+        return;
+    }
+
+    deliveryProofOrderIndex = index;
+    deliveryProofImageData = "";
+
+    const input =
+        document.getElementById(
+            "deliveryProofInput"
+        );
+
+    const preview =
+        document.getElementById(
+            "deliveryProofPreview"
+        );
+
+    const placeholder =
+        document.getElementById(
+            "deliveryProofPlaceholder"
+        );
+
+    input.value = "";
+
+    preview.removeAttribute("src");
+    preview.style.display = "none";
+
+    placeholder.style.display = "flex";
+
+    document
+        .getElementById(
+            "deliveryProofOverlay"
+        )
+        .classList.add("open");
+
+    document.body.style.overflow =
+        "hidden";
+};
+
+
+window.closeDeliveryProofSheet =
+function(){
+
+    if(deliveryProofSubmitting){
+        return;
+    }
+
+    document
+        .getElementById(
+            "deliveryProofOverlay"
+        )
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+
+    deliveryProofOrderIndex = null;
+    deliveryProofImageData = "";
+};
+
+
+document
+    .getElementById("deliveryProofOverlay")
+    .addEventListener(
+        "click",
+        closeDeliveryProofSheet
+    );
+
+
+document
+    .getElementById("deliveryProofInput")
+    .addEventListener(
+        "change",
+        function(event){
+
+            const file =
+                event.target.files?.[0];
+
+            if(!file){
+                return;
+            }
+
+            if(!file.type.startsWith("image/")){
+                event.target.value = "";
+                return;
+            }
+
+            /*
+              Compress the photo before saving.
+              This avoids storing a very large image.
+            */
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                function(loadEvent){
+
+                    const sourceImage =
+                        new Image();
+
+                    sourceImage.onload =
+                        function(){
+
+                            const maximumWidth = 900;
+                            const maximumHeight = 900;
+
+                            let width =
+                                sourceImage.width;
+
+                            let height =
+                                sourceImage.height;
+
+                            const scale =
+                                Math.min(
+                                    maximumWidth / width,
+                                    maximumHeight / height,
+                                    1
+                                );
+
+                            width =
+                                Math.round(
+                                    width * scale
+                                );
+
+                            height =
+                                Math.round(
+                                    height * scale
+                                );
+
+                            const canvas =
+                                document.createElement(
+                                    "canvas"
+                                );
+
+                            canvas.width = width;
+                            canvas.height = height;
+
+                            const context =
+                                canvas.getContext("2d");
+
+                            context.drawImage(
+                                sourceImage,
+                                0,
+                                0,
+                                width,
+                                height
+                            );
+
+                            deliveryProofImageData =
+                                canvas.toDataURL(
+                                    "image/jpeg",
+                                    .72
+                                );
+
+                            const preview =
+                                document.getElementById(
+                                    "deliveryProofPreview"
+                                );
+
+                            preview.src =
+                                deliveryProofImageData;
+
+                            preview.style.display =
+                                "block";
+
+                            document
+                                .getElementById(
+                                    "deliveryProofPlaceholder"
+                                )
+                                .style.display =
+                                    "none";
+                        };
+
+                    sourceImage.src =
+                        loadEvent.target.result;
+                };
+
+            reader.readAsDataURL(file);
+        }
+    );
+
+    async function uploadDeliveryProofImage(
+    order,
+    imageData
+){
+
+    if(!imageData){
+        return null;
+    }
+
+    /*
+      Convert compressed Base64 image
+      into a Blob for Supabase Storage.
+    */
+    const response =
+        await fetch(imageData);
+
+    const imageBlob =
+        await response.blob();
+
+    const safeOrderId =
+        String(order.order_id || Date.now())
+            .replace(/[^a-zA-Z0-9_-]/g,"_");
+
+    const deliveryBoyMobile =
+        String(
+            currentDeliveryBoy?.mobile ||
+            "unknown"
+        )
+        .replace(/\D/g,"");
+
+    const extension =
+        imageBlob.type === "image/png"
+            ? "png"
+            : imageBlob.type === "image/webp"
+                ? "webp"
+                : "jpg";
+
+    const filePath =
+        `${deliveryBoyMobile}/` +
+        `${safeOrderId}-` +
+        `${Date.now()}.${extension}`;
+
+    const {error:uploadError} =
+        await ordersSupabase
+            .storage
+            .from("delivery-proofs")
+            .upload(
+                filePath,
+                imageBlob,
+                {
+                    contentType:
+                        imageBlob.type ||
+                        "image/jpeg",
+
+                    cacheControl:"3600",
+
+                    upsert:false
+                }
+            );
+
+    if(uploadError){
+        throw uploadError;
+    }
+
+    const {data:urlData} =
+        ordersSupabase
+            .storage
+            .from("delivery-proofs")
+            .getPublicUrl(filePath);
+
+    const publicUrl =
+        urlData?.publicUrl || "";
+
+    if(!publicUrl){
+        throw new Error(
+            "Could not create delivery proof URL"
+        );
+    }
+
+    return publicUrl;
+}
+    window.submitDeliveredOrder =
+async function(){
+
+    if(deliveryProofSubmitting){
+        return;
+    }
+
+    const order =
+        visibleOrders[
+            deliveryProofOrderIndex
+        ];
+
+    if(!order || !currentDeliveryBoy){
+        return;
+    }
+
+    const deliveryTable =
+        order._order_type === "upi"
+            ? "delivery_upi_orders"
+            : "delivery_cash_orders";
+
+    const originalTable =
+        order._order_type === "upi"
+            ? "upi_orders"
+            : "cash_delivery_orders";
+
+    const submitButton =
+        document.getElementById(
+            "submitDeliveryProofBtn"
+        );
+
+    const oldHtml =
+        submitButton.innerHTML;
+
+    deliveryProofSubmitting = true;
+    submitButton.disabled = true;
+
+    submitButton.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Submitting
+    `;
+
+    const earning =
+        getDeliveryBoyEarning(order);
+
+    const deliveredAt =
+        new Date().toISOString();
+
+    const previousStats =
+        order.delivery_boy_stats &&
+        typeof order.delivery_boy_stats === "object"
+            ? order.delivery_boy_stats
+            : {};
+
+    const updatedStats = {
+        ...previousStats,
+
+        earnings:
+            earning.total,
+
+        distance_earning:
+            earning.distanceEarning,
+
+        item_bonus:
+            earning.itemBonus,
+
+        tip_earning:
+            earning.deliveryTip,
+
+        total_items:
+            earning.totalItems,
+
+        delivered_at:
+            deliveredAt,
+
+        delivery_proof_added:
+            Boolean(deliveryProofImageData),
+
+        updated_at:
+            deliveredAt
+    };
+
+   try{
+
+    ignoreLocationRealtimeUntil =
+        Date.now() + 4500;
+
+    let deliveryProofUrl = null;
+
+if(deliveryProofImageData){
+
+    submitButton.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Uploading Photo
+    `;
+
+    deliveryProofUrl =
+        await uploadDeliveryProofImage(
+            order,
+            deliveryProofImageData
+        );
+}
+
+    submitButton.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Completing Order
+    `;
+
+    const {error:deliveryError} =
+        await ordersSupabase
+            .from(deliveryTable)
+            .update({
+                delivery_status:
+                    "delivered",
+
+                delivered_at:
+                    deliveredAt,
+
+                delivery_proof_image:
+                    deliveryProofUrl,
+
+                delivery_boy_earnings:
+                    earning.total,
+
+                delivery_boy_stats:
+                    updatedStats
+            })
+            .eq(
+                "order_id",
+                order.order_id
+            )
+            .eq(
+                "delivery_boy_mobile",
+                currentDeliveryBoy.mobile
+            );
+
+    if(deliveryError){
+        throw deliveryError;
+    }
+
+    const {error:customerError} =
+        await ordersSupabase
+            .from(originalTable)
+            .update({
+                order_status:"delivered"
+            })
+            .eq(
+                "order_id",
+                order.order_id
+            );
+
+    if(customerError){
+        console.error(
+            "Customer status update error:",
+            customerError
+        );
+    }
+
+    stopDeliveryLocationTracking();
+
+    document
+        .getElementById(
+            "deliveryProofOverlay"
+        )
+        .classList.remove("open");
+
+    showCompletedOrderEarning(
+        earning.total
+    );
+
+}catch(error){
+
+    console.error(
+        "Delivery proof upload error:",
+        error
+    );
+
+    submitButton.disabled = false;
+    submitButton.innerHTML = "Submit";
+
+    deliveryProofSubmitting = false;
+}
+};
+function showCompletedOrderEarning(
+    earningAmount
+){
+
+    clearTimeout(
+        deliveryEarningCloseTimer
+    );
+
+    document
+        .getElementById(
+            "completedOrderEarning"
+        )
+        .textContent =
+            formatMoney(earningAmount);
+
+    document
+        .getElementById(
+            "deliveryEarningOverlay"
+        )
+        .classList.add("open");
+
+    document.body.style.overflow =
+        "hidden";
+
+    deliveryEarningCloseTimer =
+        setTimeout(
+            async function(){
+
+                document
+                    .getElementById(
+                        "deliveryEarningOverlay"
+                    )
+                    .classList.remove("open");
+
+                document.body.style.overflow =
+                    "";
+
+                deliveryProofSubmitting =
+                    false;
+
+                deliveryProofOrderIndex =
+                    null;
+
+                deliveryProofImageData =
+                    "";
+
+                const submitButton =
+                    document.getElementById(
+                        "submitDeliveryProofBtn"
+                    );
+
+                submitButton.disabled =
+                    false;
+
+                submitButton.innerHTML =
+                    "Submit";
+
+                /*
+                  Now load the next available order.
+                */
+                await loadOrders();
+
+            },
+            3000
+        );
+}
+window.updateDeliveryStatus =
+async function(index,newStatus,button){
+
+    const order =
+        visibleOrders[index];
+
+    if(!order || !currentDeliveryBoy){
+        return;
+    }
+
+    const deliveryTable =
+        order._order_type === "upi"
+            ? "delivery_upi_orders"
+            : "delivery_cash_orders";
+
+    const originalTable =
+        order._order_type === "upi"
+            ? "upi_orders"
+            : "cash_delivery_orders";
+
+    const updateData = {
+        delivery_status:newStatus
+    };
+
+    const now =
+        new Date().toISOString();
+
+    if(newStatus === "picked_up"){
+        updateData.picked_up_at = now;
+    }
+
+    if(newStatus === "delivered"){
+        updateData.delivered_at = now;
+    }
+
+    button.disabled = true;
+
+    const oldHtml =
+        button.innerHTML;
+
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Updating
+    `;
+
+    try{
+
+        const {error} =
+            await ordersSupabase
+                .from(deliveryTable)
+                .update(updateData)
+                .eq("order_id",order.order_id)
+                .eq(
+                    "delivery_boy_mobile",
+                    currentDeliveryBoy.mobile
+                );
+
+        if(error){
+            throw error;
+        }
+
+        const customerStatusMap = {
+            picked_up:"packed",
+            on_the_way:"on_the_way",
+            delivered:"delivered"
+        };
+
+        const customerStatus =
+            customerStatusMap[newStatus];
+
+        if(customerStatus){
+            await ordersSupabase
+                .from(originalTable)
+                .update({
+                    order_status:customerStatus
+                })
+                .eq("order_id",order.order_id);
+        }
+
+      if(
+    newStatus === "delivered" ||
+    newStatus === "cancelled"
+){
+    stopDeliveryLocationTracking();
+}
+
+await loadOrders();
+
+    }catch(error){
+
+        console.error("Update status error:",error);
+
+        button.disabled = false;
+        button.innerHTML = oldHtml;
+    }
+};
+
+
+function subscribeToOrdersRealtime(){
+
+    if(!currentDeliveryBoy){
+        return;
+    }
+
+    if(ordersRealtimeChannel){
+        ordersSupabase.removeChannel(
+            ordersRealtimeChannel
+        );
+    }
+
+    ordersRealtimeChannel =
+        ordersSupabase
+            .channel(
+                "new-duty-orders-" +
+                currentDeliveryBoy.mobile
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event:"*",
+                    schema:"public",
+                    table:"delivery_cash_orders"
+                },
+               function(payload){
+    scheduleOrdersReload(payload);
+}
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event:"*",
+                    schema:"public",
+                    table:"delivery_upi_orders"
+                },
+                function(payload){
+    scheduleOrdersReload(payload);
+}
+            )
+            .subscribe();
+}
+
+
+function scheduleOrdersReload(payload){
+
+    if(!localStorage.getItem(DUTY_START_KEY)){
+        return;
+    }
+
+    if(Date.now() < ignoreLocationRealtimeUntil){
+        console.log(
+            "📍 Location realtime update ignored"
+        );
+        return;
+    }
+
+    clearTimeout(ordersReloadTimer);
+
+    ordersReloadTimer =
+        setTimeout(
+            loadOrders,
+            300
+        );
+}
+function stopOrdersSystem(){
+
+    if(ordersRealtimeChannel){
+        ordersSupabase.removeChannel(
+            ordersRealtimeChannel
+        );
+
+        ordersRealtimeChannel = null;
+    }
+
+    availableOrders = [];
+    myOrders = [];
+    activeOrders = [];
+    visibleOrders = [];
+
+    document.getElementById("dutyOrdersSection")
+        .style.display = "none";
+
+    document.querySelector(".main")
+        .classList.remove("duty-active");
+}
+
+
+
+function openProfile(){
+
+    loadProfileDetails();
+
+    document
+        .getElementById("profileOverlay")
+        .classList.add("open");
+
+    document.body.style.overflow = "hidden";
+
+}
+
+function closeProfile(){
+
+    document
+        .getElementById("profileOverlay")
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+
+}
+
+function loadProfileDetails(){
+
+    let deliveryBoy = null;
+
+    try{
+
+        deliveryBoy = JSON.parse(
+            localStorage.getItem("deliveryBoy") || "null"
+        );
+
+    }catch(error){
+
+        deliveryBoy = null;
+
+    }
+
+    const savedMobile =
+        localStorage.getItem("partner_mobile") || "";
+
+    const savedEarnings =
+        localStorage.getItem("deliveryBoyEarnings") || "0";
+
+    const name =
+        deliveryBoy?.name ||
+        deliveryBoy?.full_name ||
+        "Delivery Partner";
+
+    const mobile =
+        deliveryBoy?.mobile ||
+        savedMobile ||
+        "0000000000";
+
+    document
+        .getElementById("profileName")
+        .textContent = name;
+
+    document
+        .getElementById("profileMobile")
+        .textContent = "+91 " + mobile;
+
+    document
+        .getElementById("profileEarnings")
+        .textContent =
+            "₹" +
+            Number(savedEarnings || 0).toLocaleString("en-IN");
+
+}
+
+function openYourOrders(){
+
+    alert("Your Orders clicked");
+
+}
+
+
+function openCancelledOrders(){
+    alert("Cancelled Orders");
+}
+
+function openAttendance(){
+    alert("Attendance");
+}
+
+function openFAQ(){
+    alert("FAQ");
+}
+
+function openTerms(){
+
+    closeProfile();
+
+    document
+        .getElementById("termsPage")
+        .classList.add("open");
+
+    document.body.style.overflow = "hidden";
+}
+
+
+function closeTerms(){
+
+    document
+        .getElementById("termsPage")
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+}
+
+function openPrivacy(){
+
+    alert("Privacy Policy clicked");
+
+}
+
+function openSupport(){
+
+    alert("Help & Support clicked");
+
+}
+
+function logoutUser(){
+stopDeliveryLocationTracking();
+
+    localStorage.removeItem("partner_mobile");
+    localStorage.removeItem("deliveryBoy");
+    localStorage.removeItem("delivery_boy_uuid");
+
+    window.location.replace("index.html");
+
+}
+
+document
+    .getElementById("profileOverlay")
+    .addEventListener("click",function(event){
+
+        if(event.target === this){
+            closeProfile();
+        }
+
+    });
+
+document.addEventListener("keydown",function(event){
+
+    if(event.key === "Escape"){
+        closeProfile();
+    }
+
+});
+/* =========================
+   SWIPE TO CLOSE PROFILE
+========================= */
+
+let profileStartX = 0;
+let profileStartY = 0;
+let profileDragging = false;
+
+const profileDrawer =
+    document.querySelector(".profileDrawer");
+
+profileDrawer.addEventListener("touchstart",function(e){
+
+    const touch = e.touches[0];
+
+    profileStartX = touch.clientX;
+    profileStartY = touch.clientY;
+
+    profileDragging = profileStartX <= 40;
+
+},{passive:true});
+
+
+profileDrawer.addEventListener("touchmove",function(e){
+
+    if(!profileDragging){
+        return;
+    }
+
+    const touch = e.touches[0];
+
+    const dx = touch.clientX - profileStartX;
+    const dy = Math.abs(touch.clientY - profileStartY);
+
+    if(dx > 80 && dy < 50){
+
+        profileDragging = false;
+
+        closeProfile();
+
+    }
+
+},{passive:true});
+
+
+profileDrawer.addEventListener("touchend",function(){
+
+    profileDragging = false;
+
+});
+/* =========================
+   DUTY TIMER
+========================= */
+
+let dutyInterval = null;
+
+const DUTY_START_KEY =
+    "cezooDutyStartTime";
+
+const DUTY_SESSION_KEY =
+    "cezooDutySessionId";
+
+const DUTY_START_ISO_KEY =
+    "cezooDutyStartIso";
+
+function formatDutyTime(totalSeconds){
+
+    totalSeconds =
+        Math.max(0,Math.floor(totalSeconds));
+
+    const hours =
+        String(
+            Math.floor(totalSeconds / 3600)
+        ).padStart(2,"0");
+
+    const minutes =
+        String(
+            Math.floor(
+                (totalSeconds % 3600) / 60
+            )
+        ).padStart(2,"0");
+
+    const seconds =
+        String(
+            totalSeconds % 60
+        ).padStart(2,"0");
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+
+function updateDutyTimer(){
+
+    const savedStartTime =
+        Number(
+            localStorage.getItem(DUTY_START_KEY)
+        );
+
+    if(!savedStartTime){
+        return;
+    }
+
+    const elapsedSeconds =
+        Math.floor(
+            (Date.now() - savedStartTime) / 1000
+        );
+
+    document
+        .getElementById("dutyTime")
+        .textContent =
+            formatDutyTime(elapsedSeconds);
+}
+
+
+function showDutyRunning(){
+
+    const startButton =
+        document.querySelector(".startBtn");
+
+    const dutyTimer =
+        document.getElementById("dutyTimer");
+
+    if(startButton){
+        startButton.style.display = "none";
+    }
+
+    dutyTimer.style.display = "flex";
+
+    updateDutyTimer();
+
+    clearInterval(dutyInterval);
+
+    dutyInterval =
+        setInterval(
+            updateDutyTimer,
+            1000
+        );
+}
+
+function getOrCreateDutySession(){
+
+    let sessionId =
+        localStorage.getItem(DUTY_SESSION_KEY);
+
+    if(!sessionId){
+
+        sessionId =
+            createDeliveryUuid();
+
+        localStorage.setItem(
+            DUTY_SESSION_KEY,
+            sessionId
+        );
+    }
+
+    return sessionId;
+}
+
+
+function getCurrentDutyDetails(){
+
+    const startMilliseconds =
+        Number(
+            localStorage.getItem(DUTY_START_KEY)
+        );
+
+    const startIso =
+        localStorage.getItem(DUTY_START_ISO_KEY);
+
+    const sessionId =
+        localStorage.getItem(DUTY_SESSION_KEY);
+
+    const currentMilliseconds =
+        Date.now();
+
+    const dutySeconds =
+        startMilliseconds
+            ? Math.max(
+                0,
+                Math.floor(
+                    (
+                        currentMilliseconds -
+                        startMilliseconds
+                    ) / 1000
+                )
+            )
+            : 0;
+
+    return {
+        sessionId,
+        startMilliseconds,
+        startIso,
+        dutySeconds,
+        dutyTimeText:
+            formatDutyTime(dutySeconds)
+    };
+}
+
+
+function buildDeliveryBoyStats(
+    order,
+    options = {}
+){
+
+    const duty =
+        getCurrentDutyDetails();
+
+    const earning =
+        getDeliveryBoyEarning(order);
+
+    const previousStats =
+        order.delivery_boy_stats &&
+        typeof order.delivery_boy_stats === "object"
+            ? order.delivery_boy_stats
+            : {};
+
+    return {
+        ...previousStats,
+
+        duty_session_id:
+            duty.sessionId,
+
+        duty_started_at:
+            duty.startIso,
+
+        duty_start_local:
+            duty.startIso
+                ? new Date(
+                    duty.startIso
+                ).toLocaleString("en-IN")
+                : null,
+
+        duty_seconds:
+            duty.dutySeconds,
+
+        duty_time_text:
+            duty.dutyTimeText,
+
+        earnings:
+            earning.total,
+
+        distance_earning:
+            earning.distanceEarning,
+
+        item_bonus:
+            earning.itemBonus,
+
+        tip_earning:
+            earning.deliveryTip,
+
+        total_items:
+            earning.totalItems,
+
+        duty_status:
+            options.ended
+                ? "ended"
+                : "running",
+
+        duty_ended_at:
+            options.ended
+                ? options.endIso
+                : (
+                    previousStats.duty_ended_at ||
+                    null
+                ),
+
+        duty_end_local:
+            options.ended
+                ? new Date(
+                    options.endIso
+                ).toLocaleString("en-IN")
+                : (
+                    previousStats.duty_end_local ||
+                    null
+                ),
+
+        updated_at:
+            new Date().toISOString()
+    };
+}
+
+
+async function saveAcceptedOrderDutyStats(order){
+
+    if(!order || !currentDeliveryBoy){
+        return;
+    }
+
+    const deliveryTable =
+        order._order_type === "upi"
+            ? "delivery_upi_orders"
+            : "delivery_cash_orders";
+
+    const earning =
+        getDeliveryBoyEarning(order);
+
+    const stats =
+        buildDeliveryBoyStats(order);
+
+    /*
+      Prevent the realtime listener from visually
+      reloading the order after this update.
+    */
+    ignoreLocationRealtimeUntil =
+        Date.now() + 2500;
+
+    const {error} =
+        await ordersSupabase
+            .from(deliveryTable)
+            .update({
+                delivery_boy_earnings:
+                    earning.total,
+
+                delivery_boy_stats:
+                    stats
+            })
+            .eq(
+                "order_id",
+                order.order_id
+            )
+            .eq(
+                "delivery_boy_mobile",
+                currentDeliveryBoy.mobile
+            );
+
+    if(error){
+        console.error(
+            "Save accepted-order earnings error:",
+            error
+        );
+
+        throw error;
+    }
+
+    /*
+      Update the local order object too.
+    */
+    order.delivery_boy_earnings =
+        earning.total;
+
+    order.delivery_boy_stats =
+        stats;
+
+    console.log(
+        "💰 Accepted-order earnings saved:",
+        {
+            order_id:order.order_id,
+            earnings:earning.total,
+            duty:stats
+        }
+    );
+}
+
+
+async function finishDutyOrdersInDatabase(){
+
+    if(!currentDeliveryBoy){
+        return;
+    }
+
+    const duty =
+        getCurrentDutyDetails();
+
+    if(!duty.sessionId){
+        return;
+    }
+
+    const endIso =
+        new Date().toISOString();
+
+    /*
+      Read orders belonging to this delivery partner.
+    */
+    const [
+        cashResponse,
+        upiResponse
+    ] = await Promise.all([
+
+        ordersSupabase
+            .from("delivery_cash_orders")
+            .select(`
+                order_id,
+                delivery_distance,
+                delivery_tip,
+                delivery_partner_tip,
+                items,
+                delivery_boy_stats
+            `)
+            .eq(
+                "delivery_boy_mobile",
+                currentDeliveryBoy.mobile
+            ),
+
+        ordersSupabase
+            .from("delivery_upi_orders")
+            .select(`
+                order_id,
+                delivery_distance,
+                delivery_tip,
+                delivery_partner_tip,
+                items,
+                delivery_boy_stats
+            `)
+            .eq(
+                "delivery_boy_mobile",
+                currentDeliveryBoy.mobile
+            )
+    ]);
+
+    if(cashResponse.error){
+        throw cashResponse.error;
+    }
+
+    if(upiResponse.error){
+        throw upiResponse.error;
+    }
+
+    const dutyCashOrders =
+        (cashResponse.data || [])
+            .filter(function(order){
+
+                return (
+                    order.delivery_boy_stats
+                        ?.duty_session_id ===
+                    duty.sessionId
+                );
+            });
+
+    const dutyUpiOrders =
+        (upiResponse.data || [])
+            .filter(function(order){
+
+                return (
+                    order.delivery_boy_stats
+                        ?.duty_session_id ===
+                    duty.sessionId
+                );
+            });
+
+    ignoreLocationRealtimeUntil =
+        Date.now() + 4000;
+
+    const updates = [];
+
+    dutyCashOrders.forEach(function(order){
+
+        const earning =
+            getDeliveryBoyEarning(order);
+
+        updates.push(
+            ordersSupabase
+                .from("delivery_cash_orders")
+                .update({
+                    delivery_boy_earnings:
+                        earning.total,
+
+                    delivery_boy_stats:
+                        buildDeliveryBoyStats(
+                            order,
+                            {
+                                ended:true,
+                                endIso
+                            }
+                        )
+                })
+                .eq(
+                    "order_id",
+                    order.order_id
+                )
+                .eq(
+                    "delivery_boy_mobile",
+                    currentDeliveryBoy.mobile
+                )
+        );
+    });
+
+    dutyUpiOrders.forEach(function(order){
+
+        const earning =
+            getDeliveryBoyEarning(order);
+
+        updates.push(
+            ordersSupabase
+                .from("delivery_upi_orders")
+                .update({
+                    delivery_boy_earnings:
+                        earning.total,
+
+                    delivery_boy_stats:
+                        buildDeliveryBoyStats(
+                            order,
+                            {
+                                ended:true,
+                                endIso
+                            }
+                        )
+                })
+                .eq(
+                    "order_id",
+                    order.order_id
+                )
+                .eq(
+                    "delivery_boy_mobile",
+                    currentDeliveryBoy.mobile
+                )
+        );
+    });
+
+    const results =
+        await Promise.all(updates);
+
+    const failedUpdate =
+        results.find(function(result){
+            return result.error;
+        });
+
+    if(failedUpdate){
+        throw failedUpdate.error;
+    }
+
+    console.log(
+        "⏱️ Duty end saved:",
+        {
+            session_id:duty.sessionId,
+            started_at:duty.startIso,
+            ended_at:endIso,
+            duty_seconds:duty.dutySeconds,
+            duty_time:
+                duty.dutyTimeText,
+            orders_updated:
+                updates.length
+        }
+    );
+}
+async function startDuty(){
+
+    const existingStartTime =
+        localStorage.getItem(DUTY_START_KEY);
+
+    if(!existingStartTime){
+
+        const startDate =
+            new Date();
+
+        localStorage.setItem(
+            DUTY_START_KEY,
+            String(startDate.getTime())
+        );
+
+        localStorage.setItem(
+            DUTY_START_ISO_KEY,
+            startDate.toISOString()
+        );
+
+        localStorage.setItem(
+            DUTY_SESSION_KEY,
+            createDeliveryUuid()
+        );
+
+        console.log(
+            "⏱️ Duty started:",
+            {
+                session_id:
+                    localStorage.getItem(
+                        DUTY_SESSION_KEY
+                    ),
+
+                started_at:
+                    startDate.toISOString(),
+
+                local_time:
+                    startDate.toLocaleString(
+                        "en-IN"
+                    )
+            }
+        );
+
+    }else{
+
+        /*
+          Ensure older running duties also
+          receive session and exact start values.
+        */
+        getOrCreateDutySession();
+
+        if(
+            !localStorage.getItem(
+                DUTY_START_ISO_KEY
+            )
+        ){
+            localStorage.setItem(
+                DUTY_START_ISO_KEY,
+                new Date(
+                    Number(existingStartTime)
+                ).toISOString()
+            );
+        }
+    }
+
+    showDutyRunning();
+
+    document
+        .querySelector(".main")
+        .classList.add("duty-active");
+
+    document
+        .getElementById("dutyOrdersSection")
+        .style.display = "block";
+
+    availableOrdersList.innerHTML =
+        getOrdersShimmer();
+
+    const verified =
+        await initializeDeliveryBoy();
+
+    if(!verified){
+        return;
+    }
+
+    await loadOrders();
+    subscribeToOrdersRealtime();
+}
+
+async function endDuty(){
+
+    const endButton =
+        document.getElementById(
+            "endDutyBtn"
+        );
+
+    if(endButton){
+        endButton.disabled = true;
+        endButton.textContent =
+            "Ending...";
+    }
+
+    try{
+
+        /*
+          Save exact end time and final duration
+          to every order accepted in this duty.
+        */
+        await finishDutyOrdersInDatabase();
+
+    }catch(error){
+
+        console.error(
+            "End duty save error:",
+            error
+        );
+
+    }finally{
+
+        stopDeliveryLocationTracking();
+
+        clearInterval(dutyInterval);
+        dutyInterval = null;
+
+        localStorage.removeItem(
+            DUTY_START_KEY
+        );
+
+        localStorage.removeItem(
+            DUTY_START_ISO_KEY
+        );
+
+        localStorage.removeItem(
+            DUTY_SESSION_KEY
+        );
+
+        document
+            .getElementById("dutyTime")
+            .textContent = "00:00:00";
+
+        document
+            .getElementById("dutyTimer")
+            .style.display = "none";
+
+        stopOrdersSystem();
+
+        const startButton =
+            document.querySelector(
+                ".startBtn"
+            );
+
+        if(startButton){
+            startButton.style.display =
+                "flex";
+        }
+
+        if(endButton){
+            endButton.disabled = false;
+            endButton.textContent =
+                "End Duty";
+        }
+    }
+}
+/* Restore running duty after refresh */
+
+async function restoreDutyTimer(){
+
+    const savedStartTime =
+        Number(
+            localStorage.getItem(DUTY_START_KEY)
+        );
+
+    if(savedStartTime){
+
+        showDutyRunning();
+
+        document.querySelector(".main")
+            .classList.add("duty-active");
+
+        document.getElementById("dutyOrdersSection")
+            .style.display = "block";
+availableOrdersList.innerHTML =
+    getOrdersShimmer();
+        const verified =
+            await initializeDeliveryBoy();
+
+        if(verified){
+            await loadOrders();
+            subscribeToOrdersRealtime();
+        }
+
+        return;
+    }
+
+    document.getElementById("dutyTimer")
+        .style.display = "none";
+
+    document.getElementById("dutyOrdersSection")
+        .style.display = "none";
+
+    const startButton =
+        document.querySelector(".startBtn");
+
+    if(startButton){
+        startButton.style.display = "flex";
+    }
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    restoreDutyTimer
+);
+function getOrdersShimmer(){
+
+    return `
+        <div class="ordersShimmer">
+
+            ${Array(2).fill("").map(() => `
+                <div class="shimmerCard">
+
+                    <div class="shimmer shimmerTitle"></div>
+
+                    <div class="shimmer shimmerRow"></div>
+
+                    <div class="shimmer shimmerRow small"></div>
+
+                    <div class="shimmer shimmerBox"></div>
+
+                    <div class="shimmer shimmerBox"></div>
+
+                </div>
+            `).join("")}
+
+        </div>
+    `;
+}
+
+/* =====================================================
+   DELIVERY BOY LIVE LOCATION TRACKING
+===================================================== */
+
+let deliveryLocationWatchId = null;
+let deliveryLocationTimer = null;
+let latestDeliveryLocation = null;
+let trackedDeliveryOrder = null;
+let deliveryLocationUpdating = false;
+
+
+function stopDeliveryLocationTracking(){
+
+    if(deliveryLocationWatchId !== null){
+
+        navigator.geolocation.clearWatch(
+            deliveryLocationWatchId
+        );
+
+        deliveryLocationWatchId = null;
+    }
+
+    if(deliveryLocationTimer){
+
+        clearInterval(deliveryLocationTimer);
+        deliveryLocationTimer = null;
+    }
+
+    latestDeliveryLocation = null;
+    trackedDeliveryOrder = null;
+    deliveryLocationUpdating = false;
+
+    console.log("📍 Delivery location tracking stopped");
+}
+
+
+async function saveDeliveryBoyLocation(){
+
+    if(
+        !trackedDeliveryOrder ||
+        !latestDeliveryLocation ||
+        deliveryLocationUpdating
+    ){
+        return;
+    }
+
+    const status =
+        String(
+            trackedDeliveryOrder.delivery_status || ""
+        )
+        .toLowerCase()
+        .trim();
+
+    if(
+        status === "delivered" ||
+        status === "cancelled"
+    ){
+        stopDeliveryLocationTracking();
+        return;
+    }
+
+    deliveryLocationUpdating = true;
+
+    const deliveryTable =
+        trackedDeliveryOrder._order_type === "upi"
+            ? "delivery_upi_orders"
+            : "delivery_cash_orders";
+
+    const locationData = {
+        latitude:latestDeliveryLocation.latitude,
+        longitude:latestDeliveryLocation.longitude,
+        accuracy:latestDeliveryLocation.accuracy,
+        heading:latestDeliveryLocation.heading,
+        speed:latestDeliveryLocation.speed,
+        updated_at:new Date().toISOString()
+    };
+
+    try{
+
+        const {error} =
+            await ordersSupabase
+                .from(deliveryTable)
+                .update({
+                    delivery_boy_location:locationData
+                })
+                .eq(
+                    "order_id",
+                    trackedDeliveryOrder.order_id
+                )
+                .eq(
+                    "delivery_boy_mobile",
+                    currentDeliveryBoy.mobile
+                );
+
+        if(error){
+    throw error;
+}
+
+/*
+  Ignore the realtime event created by this location update.
+  This prevents the whole order UI from reloading every 5 seconds.
+*/
+ignoreLocationRealtimeUntil =
+    Date.now() + 2000;
+
+console.log(
+    "📍 Delivery location updated:",
+    locationData
+);
+
+    }catch(error){
+
+        console.error(
+            "Delivery location update error:",
+            error
+        );
+
+    }finally{
+
+        deliveryLocationUpdating = false;
+    }
+}
+
+
+function startDeliveryLocationTracking(order){
+
+    if(!order || !navigator.geolocation){
+        console.error("Location is not supported");
+        return;
+    }
+
+    const status =
+        String(order.delivery_status || "")
+            .toLowerCase()
+            .trim();
+
+    if(
+        status === "delivered" ||
+        status === "cancelled"
+    ){
+        stopDeliveryLocationTracking();
+        return;
+    }
+
+    stopDeliveryLocationTracking();
+
+    trackedDeliveryOrder = order;
+
+    deliveryLocationWatchId =
+        navigator.geolocation.watchPosition(
+
+            function(position){
+
+                latestDeliveryLocation = {
+                    latitude:position.coords.latitude,
+                    longitude:position.coords.longitude,
+                    accuracy:position.coords.accuracy,
+                    heading:position.coords.heading,
+                    speed:position.coords.speed
+                };
+            },
+
+            function(error){
+
+                console.error(
+                    "Delivery location permission/error:",
+                    error
+                );
+            },
+
+            {
+                enableHighAccuracy:true,
+                maximumAge:3000,
+                timeout:15000
+            }
+        );
+
+    /*
+      Save immediately when location becomes available.
+    */
+    const firstLocationTimer =
+        setInterval(function(){
+
+            if(latestDeliveryLocation){
+
+                clearInterval(firstLocationTimer);
+                saveDeliveryBoyLocation();
+            }
+
+        },500);
+
+    /*
+      Update Supabase every 5 seconds.
+      The old JSON value is replaced by the latest location.
+    */
+    deliveryLocationTimer =
+        setInterval(
+            saveDeliveryBoyLocation,
+            5000
+        );
+
+    console.log(
+        "📍 Delivery location tracking started for:",
+        order.order_id
+    );
+}
+
+</script>
+
+</body>
+</html>
