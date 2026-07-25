@@ -1495,8 +1495,428 @@ body{
     font-size:14px;
     line-height:1.8;
 }
+
+
+/* =========================================
+   LIVE CUSTOMER ORDER STATUS ALERT
+========================================= */
+.orderCancelledOverlay{
+    position:fixed;
+    inset:0;
+    z-index:10000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(127,0,0,.72);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .18s ease,visibility .18s ease;
+}
+.orderCancelledOverlay.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+.orderCancelledCard{
+    width:min(100%,390px);
+    padding:30px 22px 22px;
+    border-radius:24px;
+    background:#fff;
+    text-align:center;
+    box-shadow:0 24px 70px rgba(0,0,0,.32);
+    transform:scale(.94);
+    transition:transform .18s ease;
+}
+.orderCancelledOverlay.open .orderCancelledCard{
+    transform:scale(1);
+}
+.orderCancelledIcon{
+    width:76px;
+    height:76px;
+    margin:0 auto 17px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fee2e2;
+    color:#dc2626;
+    font-size:34px;
+}
+.orderCancelledCard h2{
+    color:#b91c1c;
+    font-size:23px;
+    font-weight:800;
+}
+.orderCancelledCard p{
+    margin-top:9px;
+    color:#4b5563;
+    font-size:13px;
+    line-height:1.6;
+}
+.orderCancelledOrderId{
+    display:block;
+    margin-top:13px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:#fff1f2;
+    color:#be123c;
+    font-size:12px;
+    font-weight:800;
+    overflow-wrap:anywhere;
+}
+.orderCancelledOkBtn{
+    width:100%;
+    height:52px;
+    margin-top:20px;
+    border:none;
+    border-radius:15px;
+    background:#dc2626;
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+}
+.orderCancelledOkBtn:active{
+    transform:scale(.98);
+}
+
+
+/* =========================================
+   COD PAYMENT COLLECTION FLOW
+========================================= */
+.codPaymentOverlay{
+    position:fixed;
+    inset:0;
+    z-index:9500;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding-top:var(--safe-top);
+    background:rgba(15,23,42,.58);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .22s ease,visibility .22s ease;
+}
+.codPaymentOverlay.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+.codPaymentSheet{
+    width:100%;
+    max-width:540px;
+    max-height:92dvh;
+    overflow-y:auto;
+    padding:10px 18px calc(22px + var(--safe-bottom));
+    border-radius:28px 28px 0 0;
+    background:#fff;
+    transform:translateY(105%);
+    transition:transform .32s cubic-bezier(.22,.8,.32,1);
+}
+.codPaymentOverlay.open .codPaymentSheet{
+    transform:translateY(0);
+}
+.codPaymentHandle{
+    width:42px;
+    height:5px;
+    margin:0 auto 18px;
+    border-radius:999px;
+    background:#d1d5db;
+}
+.codPaymentHeader{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:18px;
+}
+.codPaymentHeader h2{
+    color:#111827;
+    font-size:20px;
+    font-weight:800;
+}
+.codPaymentHeader p{
+    margin-top:5px;
+    color:#6b7280;
+    font-size:12px;
+    line-height:1.5;
+}
+.codPaymentClose{
+    width:38px;
+    height:38px;
+    flex-shrink:0;
+    border:none;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f3f4f6;
+    color:#374151;
+    cursor:pointer;
+}
+.codAmountCard{
+    margin-bottom:16px;
+    padding:17px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:linear-gradient(135deg,#ecfdf3,#dcfce7);
+    border:1px solid #bbf7d0;
+}
+.codAmountCard span{
+    color:#15803d;
+    font-size:12px;
+    font-weight:700;
+}
+.codAmountCard strong{
+    color:#15803d;
+    font-size:27px;
+    font-weight:900;
+}
+.codPaymentStep{
+    display:none;
+}
+.codPaymentStep.active{
+    display:block;
+}
+.codMethodTitle{
+    margin-bottom:11px;
+    color:#374151;
+    font-size:12px;
+    font-weight:800;
+}
+.codMethodGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:11px;
+}
+.codMethodBtn{
+    min-height:128px;
+    padding:16px 12px;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:#fff;
+    color:#111827;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(15,23,42,.06);
+}
+.codMethodBtn:active{
+    transform:scale(.98);
+}
+.codMethodIcon{
+    width:48px;
+    height:48px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+}
+.codMethodBtn.qr .codMethodIcon{
+    background:#e0e7ff;
+    color:#4f46e5;
+}
+.codMethodBtn.phone .codMethodIcon{
+    background:#dcfce7;
+    color:#16a34a;
+}
+.codMethodBtn strong{
+    font-size:13px;
+    font-weight:800;
+}
+.codMethodBtn span{
+    color:#6b7280;
+    font-size:10px;
+    line-height:1.4;
+    text-align:center;
+}
+.codQrLoading{
+    min-height:310px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:13px;
+    color:#6b7280;
+    text-align:center;
+}
+.codQrLoading i{
+    color:#4f46e5;
+    font-size:31px;
+}
+.codQrBox{
+    width:min(100%,275px);
+    aspect-ratio:1;
+    margin:4px auto 14px;
+    padding:13px;
+    border:2px solid #e5e7eb;
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 14px 34px rgba(15,23,42,.10);
+}
+.codQrBox img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    border-radius:10px;
+}
+.codQrInstruction{
+    text-align:center;
+}
+.codQrInstruction strong{
+    display:block;
+    color:#111827;
+    font-size:15px;
+}
+.codQrInstruction span{
+    display:block;
+    margin-top:5px;
+    color:#6b7280;
+    font-size:11px;
+    line-height:1.5;
+}
+.codPaymentStatus{
+    margin-top:15px;
+    padding:13px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+}
+.codStatusIcon{
+    width:37px;
+    height:37px;
+    flex-shrink:0;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eef2ff;
+    color:#4f46e5;
+}
+.codStatusText strong{
+    display:block;
+    color:#111827;
+    font-size:12px;
+}
+.codStatusText span{
+    display:block;
+    margin-top:3px;
+    color:#6b7280;
+    font-size:10px;
+}
+.codChangeMethodBtn,
+.codShareQrBtn{
+    width:100%;
+    height:48px;
+    margin-top:11px;
+    border:none;
+    border-radius:14px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+}
+.codShareQrBtn{
+    background:#16a34a;
+    color:#fff;
+}
+
+.codShareQrBtn:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+}
+.codChangeMethodBtn{
+    background:#f3f4f6;
+    color:#374151;
+}
+.codPaymentSuccess{
+    min-height:330px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+.codPaymentSuccessIcon{
+    width:76px;
+    height:76px;
+    margin-bottom:16px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#dcfce7;
+    color:#16a34a;
+    font-size:31px;
+}
+.codPaymentSuccess h3{
+    color:#111827;
+    font-size:22px;
+    font-weight:800;
+}
+.codPaymentSuccess p{
+    max-width:300px;
+    margin-top:8px;
+    color:#6b7280;
+    font-size:12px;
+    line-height:1.6;
+}
+.codContinueProofBtn{
+    width:100%;
+    height:52px;
+    margin-top:20px;
+    border:none;
+    border-radius:15px;
+    background:#16a34a;
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+}
+.codPaymentError{
+    display:none;
+    margin-top:12px;
+    padding:11px 12px;
+    border-radius:12px;
+    background:#fff1f2;
+    border:1px solid #fecdd3;
+    color:#be123c;
+    font-size:11px;
+    font-weight:700;
+    line-height:1.5;
+}
+.codPaymentError.show{
+    display:block;
+}
+@media(max-width:360px){
+    .codMethodGrid{
+        grid-template-columns:1fr;
+    }
+    .codMethodBtn{
+        min-height:102px;
+    }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 </head>
 
@@ -1984,6 +2404,126 @@ body{
 
     </div>
 </div>
+
+
+<!-- LIVE ORDER CANCELLED ALERT -->
+<div id="orderCancelledOverlay" class="orderCancelledOverlay" role="alertdialog" aria-modal="true">
+    <div class="orderCancelledCard">
+        <div class="orderCancelledIcon">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+        <h2>Order Cancelled</h2>
+        <p>
+            This order was cancelled by the customer or admin.
+            Stop delivery and return to available orders.
+        </p>
+        <strong id="orderCancelledOrderId" class="orderCancelledOrderId">Order</strong>
+        <button id="orderCancelledOkBtn" class="orderCancelledOkBtn" type="button">
+            Find Another Order
+        </button>
+    </div>
+</div>
+
+
+<!-- CASH ON DELIVERY PAYMENT COLLECTION -->
+<div id="codPaymentOverlay" class="codPaymentOverlay" aria-modal="true" role="dialog">
+    <div class="codPaymentSheet" onclick="event.stopPropagation()">
+        <div class="codPaymentHandle"></div>
+
+        <div class="codPaymentHeader">
+            <div>
+                <h2>Collect Payment</h2>
+                <p>Payment must be completed before uploading delivery proof.</p>
+            </div>
+            <button class="codPaymentClose" type="button" onclick="closeCodPaymentFlow()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="codAmountCard">
+            <span>Cash on Delivery total</span>
+            <strong id="codPaymentAmount">₹0</strong>
+        </div>
+
+        <div id="codMethodStep" class="codPaymentStep active">
+            <div class="codMethodTitle">Choose how to complete this payment</div>
+
+            <div class="codMethodGrid">
+                <button class="codMethodBtn qr" type="button" onclick="startCodQrPayment('scanner')">
+                    <span class="codMethodIcon">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </span>
+                    <strong>Show Payment QR</strong>
+                    <span>Customer scans this QR using any UPI app</span>
+                </button>
+
+                <button class="codMethodBtn phone" type="button" onclick="startCodQrPayment('phone')">
+                    <span class="codMethodIcon">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </span>
+                    <strong>Pay on This Phone</strong>
+                    <span>Open Razorpay and pay using PhonePe, Paytm, Google Pay, card or UPI</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="codQrStep" class="codPaymentStep">
+            <div id="codQrLoading" class="codQrLoading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <strong>Generating secure QR</strong>
+                <span>Please do not close this screen.</span>
+            </div>
+
+            <div id="codQrReady" style="display:none">
+                <div class="codQrBox">
+                    <img id="codQrImage" alt="UPI payment QR">
+                </div>
+
+                <div class="codQrInstruction">
+                    <strong id="codQrTitle">Scan and pay</strong>
+                    <span id="codQrDescription">Open any UPI app and scan this QR.</span>
+                </div>
+
+                <button id="codShareQrBtn" class="codShareQrBtn" type="button" onclick="openCodRazorpayCheckout()" style="display:none">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Open Razorpay Payment
+                </button>
+
+                <div class="codPaymentStatus">
+                    <div id="codStatusIcon" class="codStatusIcon">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="codStatusText">
+                        <strong id="codStatusTitle">Waiting for payment</strong>
+                        <span id="codStatusDescription">Status updates automatically.</span>
+                    </div>
+                </div>
+
+                <button class="codChangeMethodBtn" type="button" onclick="changeCodPaymentMethod()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Change Payment Method
+                </button>
+            </div>
+
+            <div id="codPaymentError" class="codPaymentError"></div>
+        </div>
+
+        <div id="codSuccessStep" class="codPaymentStep">
+            <div class="codPaymentSuccess">
+                <div class="codPaymentSuccessIcon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3>Payment Successful</h3>
+                <p id="codSuccessMessage">Payment has been received. You can now upload delivery proof.</p>
+
+                <button class="codContinueProofBtn" type="button" onclick="continueToDeliveryProof()">
+                    Continue to Delivery Proof
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 
 /* =====================================================
@@ -2031,8 +2571,27 @@ let myOrders = [];
 let activeOrders = [];
 let visibleOrders = [];
 let ordersRealtimeChannel = null;
+let customerOrderStatusChannel = null;
 let ordersReloadTimer = null;
 let ignoreLocationRealtimeUntil = 0;
+let cancelledAlertOrderId = null;
+let cancelledAlertOrderType = null;
+
+let codPaymentOrderIndex = null;
+let codPaymentQrId = null;
+let codPaymentQrImageUrl = "";
+let codPaymentPollingTimer = null;
+let codPaymentCheckRunning = false;
+let codPaymentMode = "scanner";
+let codCheckoutOrderId = null;
+let codCheckoutOpening = false;
+const COD_RAZORPAY_KEY = "rzp_live_SqrUSaPO5pA6gt";
+const COD_PAYMENT_BACKEND_URL = "https://razropay.onrender.com";
+const COD_PAYMENT_CHECK_INTERVAL = 2000;
+const codPaidOrders = new Set(
+    JSON.parse(localStorage.getItem("cezooCodPaidOrders") || "[]")
+);
+
 /* Cache product rows fetched from Supabase */
 const deliveryProductCache = {};
 
@@ -3166,7 +3725,7 @@ function getOrderAction(order,index){
     <button
         class="orderActionBtn delivered"
         type="button"
-        onclick="openDeliveryProofSheet(${index})"
+        onclick="handleDeliveredClick(${index})"
     >
         <i class="fa-solid fa-circle-check"></i>
         Delivered
@@ -3419,8 +3978,6 @@ ${getOrderAction(order,index)}
             `;
         }).join("");
 }
-
-
 window.acceptOrder =
 async function(index,button){
 
@@ -3443,15 +4000,33 @@ async function(index,button){
 
     try{
 
+        /*
+          1. Accept the order in the delivery table.
+
+          Cash:
+          delivery_cash_orders
+
+          UPI:
+          delivery_upi_orders
+        */
         const {data,error} =
             await ordersSupabase.rpc(
                 "accept_delivery_order",
                 {
-                    p_order_id:String(order.order_id),
-                    p_order_type:order._order_type,
-                    p_delivery_boy_id:currentDeliveryBoy.id,
-                    p_delivery_boy_name:currentDeliveryBoy.name,
-                    p_delivery_boy_mobile:currentDeliveryBoy.mobile
+                    p_order_id:
+                        String(order.order_id),
+
+                    p_order_type:
+                        order._order_type,
+
+                    p_delivery_boy_id:
+                        String(currentDeliveryBoy.id),
+
+                    p_delivery_boy_name:
+                        String(currentDeliveryBoy.name),
+
+                    p_delivery_boy_mobile:
+                        String(currentDeliveryBoy.mobile)
                 }
             );
 
@@ -3460,47 +4035,857 @@ async function(index,button){
         }
 
         if(data !== true){
-    await loadOrders();
-    return;
-}
 
-/*
-  Reload the accepted order first.
-*/
-await loadOrders();
+            console.error(
+                "Order was not accepted:",
+                data
+            );
 
-/*
-  Begin live location tracking for the accepted order.
-*/
-const acceptedOrder =
-    activeOrders.find(function(item){
-        return String(item.order_id) ===
-            String(order.order_id);
-    });
+            await loadOrders();
+            return;
+        }
 
-if(acceptedOrder){
 
-    /*
-      Earnings are saved only after this
-      delivery partner accepts the order.
-    */
-    await saveAcceptedOrderDutyStats(
-        acceptedOrder
-    );
+        /*
+          2. Save the same delivery partner details
+          in the customer's original order table.
 
-    startDeliveryLocationTracking(
-        acceptedOrder
-    );
-}
+          Cash:
+          cash_delivery_orders
+
+          UPI:
+          upi_orders
+        */
+        const originalOrderTable =
+            order._order_type === "upi"
+                ? "upi_orders"
+                : "cash_delivery_orders";
+
+        const {
+            data:updatedCustomerOrder,
+            error:customerOrderError
+        } =
+            await ordersSupabase
+    .from(originalOrderTable)
+    .update({
+        delivery_boy_accepted:
+            true,
+
+        delivery_boy_id:
+            String(currentDeliveryBoy.id),
+
+        delivery_boy_name:
+            String(currentDeliveryBoy.name),
+
+        delivery_boy_mobile:
+            String(currentDeliveryBoy.mobile),
+
+        /*
+          Important:
+          Changing order_status triggers the customer notification.
+        */
+        order_status:
+            "delivery_boy_assigned"
+    })
+                .eq(
+                    "order_id",
+                    String(order.order_id)
+                )
+                .select(`
+                    order_id,
+                    delivery_boy_accepted,
+                    delivery_boy_id,
+                    delivery_boy_name,
+                    delivery_boy_mobile
+                `)
+                .maybeSingle();
+
+        if(customerOrderError){
+            throw customerOrderError;
+        }
+
+        if(!updatedCustomerOrder){
+
+            throw new Error(
+                "Original customer order was not found for " +
+                order.order_id
+            );
+        }
+
+        console.log(
+            "✅ Delivery partner saved in customer order:",
+            {
+                table:
+                    originalOrderTable,
+
+                row:
+                    updatedCustomerOrder
+            }
+        );
+
+
+        /*
+          3. Reload accepted delivery order.
+        */
+        await loadOrders();
+
+
+        const acceptedOrder =
+            activeOrders.find(function(item){
+
+                return (
+                    String(item.order_id) ===
+                    String(order.order_id)
+                );
+
+            });
+
+
+        if(acceptedOrder){
+
+            await saveAcceptedOrderDutyStats(
+                acceptedOrder
+            );
+
+            startDeliveryLocationTracking(
+                acceptedOrder
+            );
+        }
 
     }catch(error){
 
-        console.error("Accept order error:",error);
+        console.error(
+            "Accept order error:",
+            error
+        );
 
         button.disabled = false;
         button.innerHTML = oldHtml;
     }
 };
+
+
+
+
+
+
+
+
+
+
+function saveCodPaidOrder(order){
+    const key = `${order._order_type}:${order.order_id}`;
+    codPaidOrders.add(key);
+    localStorage.setItem(
+        "cezooCodPaidOrders",
+        JSON.stringify([...codPaidOrders])
+    );
+}
+
+function isCodOrderPaid(order){
+    return codPaidOrders.has(
+        `${order._order_type}:${order.order_id}`
+    );
+}
+
+window.handleDeliveredClick = function(index){
+    const order = visibleOrders[index];
+
+    if(!order){
+        return;
+    }
+
+    console.log("🚚 Delivered clicked:",{
+        orderId:order.order_id,
+        orderType:order._order_type,
+        total:getFinalOrderTotal(order)
+    });
+
+    if(
+        order._order_type === "upi" ||
+        isCodOrderPaid(order)
+    ){
+        openDeliveryProofSheet(index);
+        return;
+    }
+
+    openCodPaymentFlow(index);
+};
+
+function setCodPaymentStep(stepId){
+    [
+        "codMethodStep",
+        "codQrStep",
+        "codSuccessStep"
+    ].forEach(function(id){
+        document
+            .getElementById(id)
+            ?.classList.toggle(
+                "active",
+                id === stepId
+            );
+    });
+}
+
+function stopCodPaymentPolling(){
+    if(codPaymentPollingTimer){
+        clearInterval(codPaymentPollingTimer);
+        codPaymentPollingTimer = null;
+    }
+
+    codPaymentCheckRunning = false;
+    console.log("🛑 COD payment polling stopped");
+}
+
+function resetCodQrUi(){
+    document.getElementById("codQrLoading").style.display = "flex";
+    document.getElementById("codQrReady").style.display = "none";
+    document.getElementById("codPaymentError").classList.remove("show");
+    document.getElementById("codPaymentError").textContent = "";
+    document.getElementById("codQrImage").removeAttribute("src");
+    document.getElementById("codStatusIcon").innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i>';
+    document.getElementById("codStatusTitle").textContent =
+        "Waiting for payment";
+    document.getElementById("codStatusDescription").textContent =
+        "Status updates automatically.";
+}
+
+window.openCodPaymentFlow = function(index){
+    const order = visibleOrders[index];
+
+    if(!order){
+        return;
+    }
+
+    codPaymentOrderIndex = index;
+    codPaymentQrId = null;
+    codPaymentQrImageUrl = "";
+    codCheckoutOrderId = null;
+    codCheckoutOpening = false;
+    codPaymentMode = "scanner";
+
+    stopCodPaymentPolling();
+    resetCodQrUi();
+    setCodPaymentStep("codMethodStep");
+
+    document.getElementById("codPaymentAmount").textContent =
+        formatMoney(getFinalOrderTotal(order));
+
+    document
+        .getElementById("codPaymentOverlay")
+        .classList.add("open");
+
+    document.body.style.overflow = "hidden";
+
+    console.log("💵 COD payment options opened:",{
+        orderId:order.order_id,
+        amount:getFinalOrderTotal(order)
+    });
+};
+
+window.closeCodPaymentFlow = function(){
+    stopCodPaymentPolling();
+
+    document
+        .getElementById("codPaymentOverlay")
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+
+    codPaymentOrderIndex = null;
+    codPaymentQrId = null;
+    codPaymentQrImageUrl = "";
+    codCheckoutOrderId = null;
+    codCheckoutOpening = false;
+};
+
+document
+    .getElementById("codPaymentOverlay")
+    .addEventListener("click",closeCodPaymentFlow);
+
+window.changeCodPaymentMethod = function(){
+    stopCodPaymentPolling();
+    codPaymentQrId = null;
+    codPaymentQrImageUrl = "";
+    resetCodQrUi();
+    setCodPaymentStep("codMethodStep");
+    console.log("🔄 COD payment method changed");
+};
+
+function showCodPaymentError(message){
+    const box =
+        document.getElementById("codPaymentError");
+
+    box.textContent =
+        message || "Payment could not be started.";
+
+    box.classList.add("show");
+
+    console.error("❌ COD payment:",message);
+}
+
+async function readCodJsonResponse(response){
+    const text = await response.text();
+
+    if(!text){
+        return {};
+    }
+
+    try{
+        return JSON.parse(text);
+    }catch(error){
+        throw new Error(
+            "Payment server returned an invalid response."
+        );
+    }
+}
+
+window.startCodQrPayment = async function(mode){
+    const order =
+        visibleOrders[codPaymentOrderIndex];
+
+    if(!order){
+        return;
+    }
+
+    codPaymentMode =
+        mode === "phone"
+            ? "phone"
+            : "scanner";
+
+    stopCodPaymentPolling();
+    resetCodQrUi();
+
+    if(codPaymentMode === "phone"){
+        console.log(
+            "📱 Delivery partner selected Razorpay Checkout:",
+            {
+                orderId:order.order_id,
+                amount:getFinalOrderTotal(order)
+            }
+        );
+
+        await openCodRazorpayCheckout();
+        return;
+    }
+
+    setCodPaymentStep("codQrStep");
+
+    const amountInPaise =
+        Math.round(
+            getFinalOrderTotal(order) * 100
+        );
+
+    console.log("💳 Creating customer COD Razorpay QR:",{
+        orderId:order.order_id,
+        mode:"customer_qr",
+        rupees:getFinalOrderTotal(order),
+        paise:amountInPaise
+    });
+
+    try{
+        if(
+            !Number.isInteger(amountInPaise) ||
+            amountInPaise <= 0
+        ){
+            throw new Error(
+                "Invalid order payment amount."
+            );
+        }
+
+        const response =
+            await fetch(
+                `${COD_PAYMENT_BACKEND_URL}/create-qr`,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:JSON.stringify({
+                        amount:amountInPaise
+                    })
+                }
+            );
+
+        const result =
+            await readCodJsonResponse(response);
+
+        console.log("📥 Create customer QR response:",result);
+
+        if(
+            !response.ok ||
+            result.success !== true ||
+            !result.qr_id ||
+            !result.image_url
+        ){
+            throw new Error(
+                result.message ||
+                "Unable to generate payment QR."
+            );
+        }
+
+        codPaymentQrId = result.qr_id;
+        codPaymentQrImageUrl = result.image_url;
+
+        document.getElementById("codQrImage").src =
+            codPaymentQrImageUrl;
+
+        document.getElementById("codQrLoading").style.display =
+            "none";
+
+        document.getElementById("codQrReady").style.display =
+            "block";
+
+        document.getElementById("codQrTitle").textContent =
+            "Ask customer to scan";
+
+        document.getElementById("codQrDescription").textContent =
+            "Customer can scan using Paytm, PhonePe, Google Pay or any UPI app.";
+
+        document.getElementById(
+            "codShareQrBtn"
+        ).style.display = "none";
+
+        startCodPaymentPolling(codPaymentQrId);
+
+    }catch(error){
+        document.getElementById("codQrLoading").style.display =
+            "none";
+
+        showCodPaymentError(
+            error.message ||
+            "Unable to start QR payment."
+        );
+    }
+};
+
+
+window.openCodRazorpayCheckout = async function(){
+    const order =
+        visibleOrders[codPaymentOrderIndex];
+
+    if(!order || codCheckoutOpening){
+        return;
+    }
+
+    const amountInPaise =
+        Math.round(
+            getFinalOrderTotal(order) * 100
+        );
+
+    if(
+        !Number.isInteger(amountInPaise) ||
+        amountInPaise <= 0
+    ){
+        showCodPaymentError(
+            "Invalid order payment amount."
+        );
+        return;
+    }
+
+    if(typeof window.Razorpay !== "function"){
+        showCodPaymentError(
+            "Razorpay Checkout is not loaded."
+        );
+        return;
+    }
+
+    codCheckoutOpening = true;
+    hideCodPaymentError();
+    setCodPaymentStep("codQrStep");
+
+    const loading =
+        document.getElementById("codQrLoading");
+
+    const ready =
+        document.getElementById("codQrReady");
+
+    loading.style.display = "flex";
+    ready.style.display = "none";
+
+    loading.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <strong>Opening Razorpay</strong>
+        <span>Choose PhonePe, Paytm, Google Pay, UPI or card.</span>
+    `;
+
+    console.log(
+        "💳 Creating Razorpay Checkout order:",
+        {
+            orderId:order.order_id,
+            amountInPaise
+        }
+    );
+
+    try{
+        const response =
+            await fetch(
+                `${COD_PAYMENT_BACKEND_URL}/create-order`,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify({
+                        amount:amountInPaise
+                    })
+                }
+            );
+
+        const result =
+            await readCodJsonResponse(response);
+
+        console.log(
+            "📥 Razorpay Checkout order response:",
+            result
+        );
+
+        if(
+            !response.ok ||
+            result.success !== true ||
+            !result.order ||
+            !result.order.id
+        ){
+            throw new Error(
+                result.message ||
+                "Unable to create Razorpay payment."
+            );
+        }
+
+        codCheckoutOrderId =
+            result.order.id;
+
+        const partnerName =
+            currentDeliveryBoy?.name ||
+            currentDeliveryBoy?.delivery_boy_name ||
+            "Delivery Partner";
+
+        const partnerMobile =
+            currentDeliveryBoy?.mobile ||
+            currentDeliveryBoy?.delivery_boy_mobile ||
+            "";
+
+        const options = {
+            key:COD_RAZORPAY_KEY,
+            amount:result.order.amount,
+            currency:
+                result.order.currency || "INR",
+            order_id:result.order.id,
+
+            name:"CEZOO",
+            description:
+                `Cash collection for order ${order.order_id}`,
+
+            prefill:{
+                name:partnerName,
+                contact:partnerMobile
+            },
+
+            theme:{
+                color:"#16a34a"
+            },
+
+            handler:function(paymentResponse){
+                console.log(
+                    "✅ Delivery partner Razorpay payment success:",
+                    paymentResponse
+                );
+
+                completeCodPayment({
+                    paid:true,
+                    status:"captured",
+                    payment_id:
+                        paymentResponse.razorpay_payment_id,
+                    razorpay_order_id:
+                        paymentResponse.razorpay_order_id,
+                    razorpay_signature:
+                        paymentResponse.razorpay_signature,
+                    amount:result.order.amount,
+                    method:"razorpay_checkout",
+                    paid_by:"delivery_partner"
+                });
+            },
+
+            modal:{
+                ondismiss:function(){
+                    codCheckoutOpening = false;
+
+                    console.log(
+                        "ℹ️ Delivery partner closed Razorpay Checkout"
+                    );
+
+                    loading.style.display = "none";
+                    ready.style.display = "block";
+
+                    document.getElementById(
+                        "codQrTitle"
+                    ).textContent =
+                        "Payment not completed";
+
+                    document.getElementById(
+                        "codQrDescription"
+                    ).textContent =
+                        "Tap below to reopen Razorpay and complete payment on this phone.";
+
+                    document.getElementById(
+                        "codShareQrBtn"
+                    ).style.display = "block";
+
+                    document.getElementById(
+                        "codStatusTitle"
+                    ).textContent =
+                        "Waiting for payment";
+
+                    document.getElementById(
+                        "codStatusDescription"
+                    ).textContent =
+                        "The order will not be delivered until payment succeeds.";
+                }
+            }
+        };
+
+        const razorpay =
+            new window.Razorpay(options);
+
+        codCheckoutOpening = false;
+
+        setTimeout(function(){
+            razorpay.open();
+        },150);
+
+    }catch(error){
+        codCheckoutOpening = false;
+        loading.style.display = "none";
+        ready.style.display = "block";
+
+        document.getElementById(
+            "codQrTitle"
+        ).textContent =
+            "Unable to open payment";
+
+        document.getElementById(
+            "codQrDescription"
+        ).textContent =
+            "Try opening Razorpay again.";
+
+        document.getElementById(
+            "codShareQrBtn"
+        ).style.display = "block";
+
+        showCodPaymentError(
+            error.message ||
+            "Unable to start Razorpay Checkout."
+        );
+
+        console.error(
+            "❌ Razorpay Checkout error:",
+            error
+        );
+    }
+};
+
+
+/*
+  Compatibility alias retained for older button calls.
+*/
+window.openCodPaymentInPaytm =
+    window.openCodRazorpayCheckout;
+
+window.shareCodQr =
+    window.openCodRazorpayCheckout;
+
+
+function startCodPaymentPolling(qrId){
+    stopCodPaymentPolling();
+
+    checkCodPaymentStatus(qrId);
+
+    codPaymentPollingTimer =
+        setInterval(
+            function(){
+                checkCodPaymentStatus(qrId);
+            },
+            COD_PAYMENT_CHECK_INTERVAL
+        );
+
+    console.log("⚡ COD payment polling started:",qrId);
+}
+
+async function checkCodPaymentStatus(qrId){
+    if(
+        codPaymentCheckRunning ||
+        !qrId ||
+        qrId !== codPaymentQrId
+    ){
+        return;
+    }
+
+    codPaymentCheckRunning = true;
+
+    try{
+        const response =
+            await fetch(
+                `${COD_PAYMENT_BACKEND_URL}/payment-status/` +
+                encodeURIComponent(qrId),
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
+
+        const result =
+            await readCodJsonResponse(response);
+
+        console.log("🔎 COD payment status:",result);
+
+        if(
+            !response.ok ||
+            result.success !== true
+        ){
+            throw new Error(
+                result.message ||
+                "Unable to check payment status."
+            );
+        }
+
+        if(
+            result.paid === true &&
+            result.status === "captured"
+        ){
+            completeCodPayment(result);
+            return;
+        }
+
+        if(
+            result.processing === true ||
+            result.status === "authorized"
+        ){
+            document.getElementById("codStatusTitle").textContent =
+                "Payment processing";
+
+            document.getElementById("codStatusDescription").textContent =
+                "Payment received. Waiting for capture.";
+
+            return;
+        }
+
+        document.getElementById("codStatusTitle").textContent =
+            "Waiting for payment";
+
+        document.getElementById("codStatusDescription").textContent =
+            "Complete payment in the UPI app.";
+
+    }catch(error){
+        console.error("COD status checking error:",error);
+
+        document.getElementById("codStatusTitle").textContent =
+            "Reconnecting";
+
+        document.getElementById("codStatusDescription").textContent =
+            "Payment check will retry automatically.";
+    }finally{
+        codPaymentCheckRunning = false;
+    }
+}
+
+function completeCodPayment(paymentData){
+    const order =
+        visibleOrders[codPaymentOrderIndex];
+
+    if(!order){
+        return;
+    }
+
+    stopCodPaymentPolling();
+    saveCodPaidOrder(order);
+
+    /*
+      Save payment information inside the local order object.
+      This is also included in delivery_boy_stats at completion.
+    */
+    order.cod_payment = {
+        paid:true,
+        payment_id:
+            paymentData.payment_id || null,
+        qr_id:
+            codPaymentQrId || null,
+        razorpay_order_id:
+            paymentData.razorpay_order_id ||
+            codCheckoutOrderId ||
+            null,
+        razorpay_signature:
+            paymentData.razorpay_signature ||
+            null,
+        amount:
+            paymentData.amount ||
+            Math.round(
+                getFinalOrderTotal(order) * 100
+            ),
+        method:
+            paymentData.method || "upi",
+        paid_by:
+            paymentData.paid_by ||
+            (
+                codPaymentMode === "phone"
+                    ? "delivery_partner"
+                    : "customer"
+            ),
+        captured_at:
+            new Date().toISOString()
+    };
+
+    document.getElementById("codStatusIcon").innerHTML =
+        '<i class="fa-solid fa-check"></i>';
+
+    document.getElementById("codStatusIcon").style.background =
+        "#dcfce7";
+
+    document.getElementById("codStatusIcon").style.color =
+        "#16a34a";
+
+    document.getElementById("codSuccessMessage").textContent =
+        `${formatMoney(getFinalOrderTotal(order))} received successfully. ` +
+        `Now continue and upload delivery proof.`;
+
+    setCodPaymentStep("codSuccessStep");
+
+    console.log("✅ COD PAYMENT SUCCESS:",{
+        orderId:order.order_id,
+        ...order.cod_payment
+    });
+
+    if("vibrate" in navigator){
+        navigator.vibrate([100,60,140]);
+    }
+}
+
+window.continueToDeliveryProof = function(){
+    const index = codPaymentOrderIndex;
+    const order = visibleOrders[index];
+
+    if(!order || !isCodOrderPaid(order)){
+        return;
+    }
+
+    document
+        .getElementById("codPaymentOverlay")
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+
+    /*
+      Keep the same visible-order index and open
+      the existing delivery-proof flow.
+    */
+    openDeliveryProofSheet(index);
+
+    console.log(
+        "📸 COD payment completed; opening delivery proof"
+    );
+};
+
 
 window.openDeliveryProofSheet =
 function(index){
@@ -3847,6 +5232,15 @@ async function(){
         delivery_proof_added:
             Boolean(deliveryProofImageData),
 
+        cod_payment:
+            order.cod_payment || null,
+
+        payment_collected:
+            order._order_type === "cash"
+                ? isCodOrderPaid(order)
+                : true,
+
+
         updated_at:
             deliveredAt
     };
@@ -3928,6 +5322,16 @@ if(deliveryProofImageData){
     }
 
     stopDeliveryLocationTracking();
+
+    if(order._order_type === "cash"){
+        codPaidOrders.delete(
+            `${order._order_type}:${order.order_id}`
+        );
+        localStorage.setItem(
+            "cezooCodPaidOrders",
+            JSON.stringify([...codPaidOrders])
+        );
+    }
 
     document
         .getElementById(
@@ -4123,16 +5527,23 @@ function subscribeToOrdersRealtime(){
     }
 
     if(ordersRealtimeChannel){
-        ordersSupabase.removeChannel(
-            ordersRealtimeChannel
-        );
+        ordersSupabase.removeChannel(ordersRealtimeChannel);
     }
 
+    if(customerOrderStatusChannel){
+        ordersSupabase.removeChannel(customerOrderStatusChannel);
+    }
+
+    /*
+      Delivery-assignment tables:
+      used for newly assigned/accepted delivery rows.
+    */
     ordersRealtimeChannel =
         ordersSupabase
             .channel(
-                "new-duty-orders-" +
-                currentDeliveryBoy.mobile
+                "delivery-orders-live-" +
+                currentDeliveryBoy.mobile +
+                "-" + Date.now()
             )
             .on(
                 "postgres_changes",
@@ -4141,9 +5552,10 @@ function subscribeToOrdersRealtime(){
                     schema:"public",
                     table:"delivery_cash_orders"
                 },
-               function(payload){
-    scheduleOrdersReload(payload);
-}
+                function(payload){
+                    console.log("⚡ delivery_cash_orders changed",payload);
+                    scheduleOrdersReload(payload);
+                }
             )
             .on(
                 "postgres_changes",
@@ -4153,10 +5565,250 @@ function subscribeToOrdersRealtime(){
                     table:"delivery_upi_orders"
                 },
                 function(payload){
-    scheduleOrdersReload(payload);
-}
+                    console.log("⚡ delivery_upi_orders changed",payload);
+                    scheduleOrdersReload(payload);
+                }
             )
-            .subscribe();
+            .subscribe(function(status){
+                console.log("📡 Delivery tables realtime:",status);
+            });
+
+    /*
+      IMPORTANT:
+      Watch order_status from the ORIGINAL customer tables.
+
+      Cash  -> cash_delivery_orders.order_status
+      UPI   -> upi_orders.order_status
+    */
+    customerOrderStatusChannel =
+        ordersSupabase
+            .channel(
+                "customer-order-status-live-" +
+                currentDeliveryBoy.mobile +
+                "-" + Date.now()
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event:"UPDATE",
+                    schema:"public",
+                    table:"cash_delivery_orders"
+                },
+                function(payload){
+                    handleCustomerOrderStatusRealtime(
+                        payload,
+                        "cash"
+                    );
+                }
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event:"UPDATE",
+                    schema:"public",
+                    table:"upi_orders"
+                },
+                function(payload){
+                    handleCustomerOrderStatusRealtime(
+                        payload,
+                        "upi"
+                    );
+                }
+            )
+            .subscribe(function(status){
+                console.log("📡 Customer order_status realtime:",status);
+            });
+}
+
+
+function normalizeOrderStatus(value){
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replaceAll("-","_")
+        .replaceAll(" ","_");
+}
+
+
+function isCurrentPartnerOrder(row){
+
+    if(!row || !currentDeliveryBoy){
+        return false;
+    }
+
+    const rowMobile =
+        String(row.delivery_boy_mobile || "")
+            .replace(/\D/g,"")
+            .slice(-10);
+
+    const partnerMobile =
+        String(currentDeliveryBoy.mobile || "")
+            .replace(/\D/g,"")
+            .slice(-10);
+
+    if(rowMobile && partnerMobile && rowMobile === partnerMobile){
+        return true;
+    }
+
+    const orderId = String(row.order_id || row.id || "");
+
+    return activeOrders.some(function(order){
+        return String(order.order_id || order.id || "") === orderId;
+    });
+}
+
+
+async function handleCustomerOrderStatusRealtime(payload,orderType){
+
+    const newRow = payload?.new || {};
+    const oldRow = payload?.old || {};
+
+    const orderId = String(
+        newRow.order_id ||
+        oldRow.order_id ||
+        newRow.id ||
+        oldRow.id ||
+        ""
+    );
+
+    const oldStatus = normalizeOrderStatus(oldRow.order_status);
+    const newStatus = normalizeOrderStatus(newRow.order_status);
+
+    console.log("⚡ CUSTOMER ORDER STATUS LIVE",{
+        table:orderType === "upi" ? "upi_orders" : "cash_delivery_orders",
+        orderId,
+        oldStatus,
+        newStatus,
+        payload
+    });
+
+    if(!isCurrentPartnerOrder(newRow)){
+        console.log("ℹ️ Status belongs to another delivery partner; ignored",orderId);
+        return;
+    }
+
+    /*
+      If customer/admin cancels at any point during delivery,
+      immediately stop tracking and show the red alert.
+    */
+    if(newStatus === "cancelled" || newStatus === "canceled"){
+        await handleLiveOrderCancelled(orderId,orderType,newRow);
+        return;
+    }
+
+    /*
+      For every other order_status update, refresh immediately
+      so the latest database state is visible without delay.
+    */
+    if(newStatus && newStatus !== oldStatus){
+        console.log("✅ Live status updated:",newStatus);
+        await loadOrdersSilently();
+    }
+}
+
+
+async function handleLiveOrderCancelled(orderId,orderType,row){
+
+    if(
+        cancelledAlertOrderId === orderId &&
+        document.getElementById("orderCancelledOverlay")
+            ?.classList.contains("open")
+    ){
+        return;
+    }
+
+    cancelledAlertOrderId = orderId;
+    cancelledAlertOrderType = orderType;
+
+    console.error("❌ ACTIVE ORDER CANCELLED LIVE",{
+        orderId,
+        orderType,
+        orderStatus:row.order_status
+    });
+
+    stopDeliveryLocationTracking();
+
+    /*
+      Keep the delivery mirror table consistent too.
+      This is best-effort; the red alert still works even if
+      RLS prevents this update.
+    */
+    const deliveryTable =
+        orderType === "upi"
+            ? "delivery_upi_orders"
+            : "delivery_cash_orders";
+
+    try{
+        const {error} = await ordersSupabase
+            .from(deliveryTable)
+            .update({delivery_status:"cancelled"})
+            .eq("order_id",orderId);
+
+        if(error){
+            console.warn("Could not sync delivery_status cancellation:",error);
+        }
+    }catch(error){
+        console.warn("Cancellation sync failed:",error);
+    }
+
+    availableOrders = availableOrders.filter(function(order){
+        return String(order.order_id) !== orderId;
+    });
+
+    myOrders = myOrders.filter(function(order){
+        return String(order.order_id) !== orderId;
+    });
+
+    activeOrders = activeOrders.filter(function(order){
+        return String(order.order_id) !== orderId;
+    });
+
+    visibleOrders = visibleOrders.filter(function(order){
+        return String(order.order_id) !== orderId;
+    });
+
+    const idElement = document.getElementById("orderCancelledOrderId");
+    if(idElement){
+        idElement.textContent = "Order #" + orderId;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    document.getElementById("orderCancelledOverlay")
+        ?.classList.add("open");
+
+    if("vibrate" in navigator){
+        navigator.vibrate([250,100,250,100,350]);
+    }
+}
+
+
+async function closeCancelledOrderAlert(){
+
+    document.getElementById("orderCancelledOverlay")
+        ?.classList.remove("open");
+
+    document.body.style.overflow = "";
+
+    console.log("🔎 Cancelled order removed. Searching for another order...",{
+        orderId:cancelledAlertOrderId,
+        orderType:cancelledAlertOrderType
+    });
+
+    cancelledAlertOrderId = null;
+    cancelledAlertOrderType = null;
+
+    await loadOrders();
+}
+
+
+document.getElementById("orderCancelledOkBtn")
+    ?.addEventListener("click",closeCancelledOrderAlert);
+
+
+async function loadOrdersSilently(){
+    /* Current loader is fast, but this helper makes the intent clear. */
+    await loadOrders();
 }
 
 
@@ -4166,21 +5818,16 @@ function scheduleOrdersReload(payload){
         return;
     }
 
-    if(Date.now() < ignoreLocationRealtimeUntil){
-        console.log(
-            "📍 Location realtime update ignored"
-        );
-        return;
-    }
+    console.log("⚡ Instant delivery-table reload",payload);
 
     clearTimeout(ordersReloadTimer);
 
-    ordersReloadTimer =
-        setTimeout(
-            loadOrders,
-            300
-        );
+    /* No artificial delay. */
+    ordersReloadTimer = setTimeout(function(){
+        loadOrders();
+    },0);
 }
+
 function stopOrdersSystem(){
 
     if(ordersRealtimeChannel){
@@ -4189,6 +5836,14 @@ function stopOrdersSystem(){
         );
 
         ordersRealtimeChannel = null;
+    }
+
+    if(customerOrderStatusChannel){
+        ordersSupabase.removeChannel(
+            customerOrderStatusChannel
+        );
+
+        customerOrderStatusChannel = null;
     }
 
     availableOrders = [];
