@@ -4342,8 +4342,7 @@ async function readCodJsonResponse(response){
 }
 
 window.startCodQrPayment = async function(mode){
-    const order =
-        visibleOrders[codPaymentOrderIndex];
+    const order = visibleOrders[codPaymentOrderIndex];
 
     if(!order){
         return;
@@ -4357,77 +4356,61 @@ window.startCodQrPayment = async function(mode){
     stopCodPaymentPolling();
     resetCodQrUi();
 
+    /*
+      OPTION 2:
+      Delivery partner pays on this same phone
+      using normal Razorpay Checkout.
+    */
     if(codPaymentMode === "phone"){
-        console.log(
-            "📱 Delivery partner selected Razorpay Checkout:",
-            {
-                orderId:order.order_id,
-                amount:getFinalOrderTotal(order)
-            }
-        );
-
         await openCodRazorpayCheckout();
         return;
     }
 
+    /*
+      OPTION 1:
+      Customer scans Razorpay QR.
+    */
     setCodPaymentStep("codQrStep");
 
     const amountInPaise =
-        Math.round(
-            getFinalOrderTotal(order) * 100
-        );
-
-    console.log("💳 Creating customer COD Razorpay QR:",{
-        orderId:order.order_id,
-        mode:"customer_qr",
-        rupees:getFinalOrderTotal(order),
-        paise:amountInPaise
-    });
+        Math.round(getFinalOrderTotal(order) * 100);
 
     try{
-        if(
-            !Number.isInteger(amountInPaise) ||
-            amountInPaise <= 0
-        ){
-            throw new Error(
-                "Invalid order payment amount."
-            );
+        if(!amountInPaise || amountInPaise <= 0){
+            throw new Error("Invalid order payment amount.");
         }
 
-        const response =
-            await fetch(
-                `${COD_PAYMENT_BACKEND_URL}/create-qr`,
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body:JSON.stringify({
-                        amount:amountInPaise
-                    })
-                }
-            );
+        const response = await fetch(
+            `${COD_PAYMENT_BACKEND_URL}/create-qr`,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    amount:amountInPaise
+                })
+            }
+        );
 
-        const result =
-            await readCodJsonResponse(response);
+        const data = await response.json();
 
-        console.log("📥 Create customer QR response:",result);
+        console.log("CUSTOMER QR RESPONSE:",data);
 
         if(
-            !response.ok ||
-            result.success !== true ||
-            !result.qr_id ||
-            !result.image_url
+            !data ||
+            !data.success ||
+            !data.qr_id ||
+            !data.image_url
         ){
             throw new Error(
-                result.message ||
+                data?.message ||
                 "Unable to generate payment QR."
             );
         }
 
-        codPaymentQrId = result.qr_id;
-        codPaymentQrImageUrl = result.image_url;
+        codPaymentQrId = data.qr_id;
+        codPaymentQrImageUrl = data.image_url;
 
         document.getElementById("codQrImage").src =
             codPaymentQrImageUrl;
@@ -4458,30 +4441,24 @@ window.startCodQrPayment = async function(mode){
             error.message ||
             "Unable to start QR payment."
         );
+
+        console.error("Customer QR error:",error);
     }
 };
 
 
 window.openCodRazorpayCheckout = async function(){
-    const order =
-        visibleOrders[codPaymentOrderIndex];
+    const order = visibleOrders[codPaymentOrderIndex];
 
     if(!order || codCheckoutOpening){
         return;
     }
 
-    const amountInPaise =
-        Math.round(
-            getFinalOrderTotal(order) * 100
-        );
+    const finalAmount =
+        Number(getFinalOrderTotal(order));
 
-    if(
-        !Number.isInteger(amountInPaise) ||
-        amountInPaise <= 0
-    ){
-        showCodPaymentError(
-            "Invalid order payment amount."
-        );
+    if(!finalAmount || finalAmount <= 0){
+        showCodPaymentError("Invalid order payment amount.");
         return;
     }
 
@@ -4494,68 +4471,46 @@ window.openCodRazorpayCheckout = async function(){
 
     codCheckoutOpening = true;
     hideCodPaymentError();
-    setCodPaymentStep("codQrStep");
 
-    const loading =
-        document.getElementById("codQrLoading");
-
-    const ready =
-        document.getElementById("codQrReady");
-
-    loading.style.display = "flex";
-    ready.style.display = "none";
-
-    loading.innerHTML = `
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <strong>Opening Razorpay</strong>
-        <span>Choose PhonePe, Paytm, Google Pay, UPI or card.</span>
-    `;
-
-    console.log(
-        "💳 Creating Razorpay Checkout order:",
-        {
-            orderId:order.order_id,
-            amountInPaise
-        }
-    );
+    const paymentOverlay =
+        document.getElementById("codPaymentOverlay");
 
     try{
-        const response =
-            await fetch(
-                `${COD_PAYMENT_BACKEND_URL}/create-order`,
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body:JSON.stringify({
-                        amount:amountInPaise
-                    })
-                }
-            );
-
-        const result =
-            await readCodJsonResponse(response);
-
         console.log(
-            "📥 Razorpay Checkout order response:",
-            result
+            "CREATING RAZORPAY ORDER:",
+            {
+                amount:finalAmount,
+                orderId:order.order_id
+            }
         );
 
-        if(
-            !response.ok ||
-            result.success !== true ||
-            !result.order ||
-            !result.order.id
-        ){
-            throw new Error(
-                result.message ||
-                "Unable to create Razorpay payment."
+        const response = await fetch(
+            "https://razropay.onrender.com/create-order",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    amount:Math.round(finalAmount * 100)
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("RAZORPAY RESPONSE:",data);
+
+        if(!data || !data.success || !data.order){
+            codCheckoutOpening = false;
+            showCodPaymentError(
+                data?.message ||
+                "Razorpay order failed."
             );
+            return;
         }
 
-        codCheckoutOrderId =
-            result.order.id;
+        codCheckoutOrderId = data.order.id;
 
         const partnerName =
             currentDeliveryBoy?.name ||
@@ -4568,15 +4523,14 @@ window.openCodRazorpayCheckout = async function(){
             "";
 
         const options = {
-            key:COD_RAZORPAY_KEY,
-            amount:result.order.amount,
-            currency:
-                result.order.currency || "INR",
-            order_id:result.order.id,
+            key:"rzp_live_SqrUSaPO5pA6gt",
+
+            amount:data.order.amount,
+            currency:data.order.currency,
+            order_id:data.order.id,
 
             name:"CEZOO",
-            description:
-                `Cash collection for order ${order.order_id}`,
+            description:"Cash Order Payment",
 
             prefill:{
                 name:partnerName,
@@ -4584,25 +4538,35 @@ window.openCodRazorpayCheckout = async function(){
             },
 
             theme:{
-                color:"#16a34a"
+                color:"#0BD957"
             },
 
             handler:function(paymentResponse){
                 console.log(
-                    "✅ Delivery partner Razorpay payment success:",
+                    "Payment Success:",
                     paymentResponse
                 );
+
+                codCheckoutOpening = false;
+
+                if(paymentOverlay){
+                    paymentOverlay.style.display = "";
+                }
 
                 completeCodPayment({
                     paid:true,
                     status:"captured",
+
                     payment_id:
                         paymentResponse.razorpay_payment_id,
+
                     razorpay_order_id:
                         paymentResponse.razorpay_order_id,
+
                     razorpay_signature:
                         paymentResponse.razorpay_signature,
-                    amount:result.order.amount,
+
+                    amount:data.order.amount,
                     method:"razorpay_checkout",
                     paid_by:"delivery_partner"
                 });
@@ -4612,12 +4576,22 @@ window.openCodRazorpayCheckout = async function(){
                 ondismiss:function(){
                     codCheckoutOpening = false;
 
-                    console.log(
-                        "ℹ️ Delivery partner closed Razorpay Checkout"
-                    );
+                    console.log("Razorpay closed");
 
-                    loading.style.display = "none";
-                    ready.style.display = "block";
+                    if(paymentOverlay){
+                        paymentOverlay.style.display = "";
+                        paymentOverlay.classList.add("open");
+                    }
+
+                    setCodPaymentStep("codQrStep");
+
+                    document.getElementById(
+                        "codQrLoading"
+                    ).style.display = "none";
+
+                    document.getElementById(
+                        "codQrReady"
+                    ).style.display = "block";
 
                     document.getElementById(
                         "codQrTitle"
@@ -4632,22 +4606,23 @@ window.openCodRazorpayCheckout = async function(){
                     document.getElementById(
                         "codShareQrBtn"
                     ).style.display = "block";
-
-                    document.getElementById(
-                        "codStatusTitle"
-                    ).textContent =
-                        "Waiting for payment";
-
-                    document.getElementById(
-                        "codStatusDescription"
-                    ).textContent =
-                        "The order will not be delivered until payment succeeds.";
                 }
             }
         };
 
-        const razorpay =
-            new window.Razorpay(options);
+        /*
+          Same opening pattern as your working CEZOO code.
+        */
+        const razorpay = new Razorpay(options);
+
+        /*
+          Hide our COD overlay before opening Razorpay,
+          so it does not cover Checkout inside WebView.
+        */
+        if(paymentOverlay){
+            paymentOverlay.classList.remove("open");
+            paymentOverlay.style.display = "none";
+        }
 
         codCheckoutOpening = false;
 
@@ -4657,39 +4632,23 @@ window.openCodRazorpayCheckout = async function(){
 
     }catch(error){
         codCheckoutOpening = false;
-        loading.style.display = "none";
-        ready.style.display = "block";
 
-        document.getElementById(
-            "codQrTitle"
-        ).textContent =
-            "Unable to open payment";
-
-        document.getElementById(
-            "codQrDescription"
-        ).textContent =
-            "Try opening Razorpay again.";
-
-        document.getElementById(
-            "codShareQrBtn"
-        ).style.display = "block";
+        if(paymentOverlay){
+            paymentOverlay.style.display = "";
+            paymentOverlay.classList.add("open");
+        }
 
         showCodPaymentError(
             error.message ||
-            "Unable to start Razorpay Checkout."
+            "Unable to open Razorpay payment."
         );
 
-        console.error(
-            "❌ Razorpay Checkout error:",
-            error
-        );
+        console.error("Payment error:",error);
     }
 };
 
 
-/*
-  Compatibility alias retained for older button calls.
-*/
+/* Compatibility aliases */
 window.openCodPaymentInPaytm =
     window.openCodRazorpayCheckout;
 
