@@ -3767,22 +3767,42 @@ function getOrderAction(order,index){
 
 async function renderOneOrder(){
 
-    if(activeOrders.length > 0){
-        visibleOrders =
-            activeOrders.slice(0,1);
+    /*
+      Show every order sent to the delivery app.
 
-        document.getElementById("ordersCountText").textContent =
-            "1 active order • Complete it to receive the next order";
-    }else{
-        visibleOrders =
-            availableOrders.slice(0,1);
+      Active accepted orders appear first, followed by all available
+      assigned orders. Duplicate rows are removed using order_id +
+      order type, so the same order is never shown twice.
+    */
+    const combinedOrders = [
+        ...activeOrders,
+        ...availableOrders
+    ];
 
-        document.getElementById("ordersCountText").textContent =
-            availableOrders.length +
-            " order" +
-            (availableOrders.length === 1 ? "" : "s") +
-            " waiting • Showing 1 order";
-    }
+    const seenOrderKeys = new Set();
+
+    visibleOrders =
+        combinedOrders.filter(function(order){
+
+            const orderKey =
+                String(order._order_type || "") +
+                "::" +
+                String(order.order_id ?? order.id ?? "");
+
+            if(seenOrderKeys.has(orderKey)){
+                return false;
+            }
+
+            seenOrderKeys.add(orderKey);
+            return true;
+        });
+
+    document.getElementById("ordersCountText").textContent =
+        visibleOrders.length +
+        " order" +
+        (visibleOrders.length === 1 ? "" : "s") +
+        " available";
+
 document.getElementById("ordersHeaderTitle").style.display = "none";
     if(visibleOrders.length === 0){
 
