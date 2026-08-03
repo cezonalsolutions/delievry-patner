@@ -2064,7 +2064,7 @@ body{
                     <span id="locationUpdateTime">Waiting for GPS update</span>
                 </div>
             </div>
-            <span id="activeOrdersLimit" class="activeOrdersLimit">0 / 2 active</span>
+            <span id="activeOrdersLimit" class="activeOrdersLimit">0 active orders</span>
         </div>
 
         <div class="ordersHeader">
@@ -2667,7 +2667,7 @@ console.log("✅ CEZOO Supabase connected");
 
 
 /* =====================================================
-   DELIVERY PARTNER + ONE ORDER LOGIC
+   DELIVERY PARTNER + UNLIMITED ORDER LOGIC
 ===================================================== */
 let deliveryProofOrderIndex = null;
 let deliveryProofImageData = "";
@@ -2684,7 +2684,7 @@ let ordersReloadTimer = null;
 let ignoreLocationRealtimeUntil = 0;
 let cancelledAlertOrderId = null;
 let cancelledAlertOrderType = null;
-const MAX_ACTIVE_ORDERS = 2;
+const LOCATION_SYNC_INTERVAL = 1000;
 let lastLocationSavedAt = 0;
 let locationStatusClock = null;
 
@@ -3804,19 +3804,6 @@ function getOrderAction(order,index){
             String(currentDeliveryBoy?.mobile || "");
 
     if(!isMyOrder){
-        const activeAcceptedCount = activeOrders.filter(function(item){
-            const itemStatus = String(item.delivery_status || "").toLowerCase().trim();
-            return item.delivery_boy_accepted === true && !["delivered","cancelled"].includes(itemStatus);
-        }).length;
-
-        if(activeAcceptedCount >= MAX_ACTIVE_ORDERS){
-            return `
-                <button class="orderActionBtn limitReached" type="button" disabled>
-                    Maximum 2 Orders Active
-                </button>
-            `;
-        }
-
         return `
             <button
                 class="orderActionBtn"
@@ -4141,18 +4128,6 @@ async function(index,button){
         visibleOrders[index];
 
     if(!order || !currentDeliveryBoy){
-        return;
-    }
-
-    const activeAcceptedCount = activeOrders.filter(function(item){
-        const itemStatus = String(item.delivery_status || "").toLowerCase().trim();
-        return item.delivery_boy_accepted === true && !["delivered","cancelled"].includes(itemStatus);
-    }).length;
-
-    if(activeAcceptedCount >= MAX_ACTIVE_ORDERS){
-        button.disabled = true;
-        button.innerHTML = "Maximum 2 Orders Active";
-        updateActiveOrdersLimit();
         return;
     }
 
@@ -5461,6 +5436,9 @@ if(deliveryProofImageData){
                 delivery_status:
                     "delivered",
 
+                payment_status:
+                    "paid",
+
                 delivered_at:
                     deliveredAt,
 
@@ -5490,7 +5468,8 @@ if(deliveryProofImageData){
         await ordersSupabase
             .from(originalTable)
             .update({
-                order_status:"delivered"
+                order_status:"delivered",
+                payment_status:"paid"
             })
             .eq(
                 "order_id",
@@ -7136,7 +7115,7 @@ function startDeliveryLocationTracking(order){
 
             {
                 enableHighAccuracy:true,
-                maximumAge:3000,
+                maximumAge:0,
                 timeout:15000
             }
         );
@@ -7156,13 +7135,13 @@ function startDeliveryLocationTracking(order){
         },500);
 
     /*
-      Update Supabase every 5 seconds.
+      Update Supabase every second.
       The old JSON value is replaced by the latest location.
     */
     deliveryLocationTimer =
         setInterval(
             saveDeliveryBoyLocation,
-            5000
+            LOCATION_SYNC_INTERVAL
         );
 
     console.log(
@@ -7174,7 +7153,7 @@ function startDeliveryLocationTracking(order){
 
 
 /* =====================================================
-   CEZOO SMOOTH DOM SYNC + TWO-ORDER SILENT LOCATION
+   CEZOO SMOOTH DOM SYNC + UNLIMITED-ORDER SILENT LOCATION
 ===================================================== */
 function syncOrdersDom(nextHtml){
     const template = document.createElement("template");
@@ -7237,14 +7216,14 @@ function getActiveAcceptedOrders(){
     return activeOrders.filter(function(order){
         const status = String(order.delivery_status || "").toLowerCase().trim();
         return order.delivery_boy_accepted === true && !["delivered","cancelled"].includes(status);
-    }).slice(0,MAX_ACTIVE_ORDERS);
+    });
 }
 
 function updateActiveOrdersLimit(){
     const count = getActiveAcceptedOrders().length;
     const badge = document.getElementById("activeOrdersLimit");
     if(badge){
-        badge.textContent = count + " / " + MAX_ACTIVE_ORDERS + " active";
+        badge.textContent = count + (count === 1 ? " active order" : " active orders");
     }
 }
 
@@ -7332,7 +7311,7 @@ saveDeliveryBoyLocation = async function(){
         const failed = results.find(result => result.error);
         if(failed){ throw failed.error; }
 
-        ignoreLocationRealtimeUntil = Date.now() + 2500;
+        ignoreLocationRealtimeUntil = Date.now() + 4000;
         lastLocationSavedAt = Date.now();
         updateLocationStatus(true,"Updated just now");
         updateActiveOrdersLimit();
@@ -7369,12 +7348,12 @@ startDeliveryLocationTracking = function(order){
                 console.error("Delivery location permission/error:",error);
                 updateLocationStatus(false,"Allow location permission");
             },
-            {enableHighAccuracy:true,maximumAge:3000,timeout:15000}
+            {enableHighAccuracy:true,maximumAge:0,timeout:15000}
         );
     }
 
     if(!deliveryLocationTimer){
-        deliveryLocationTimer = setInterval(saveDeliveryBoyLocation,7000);
+        deliveryLocationTimer = setInterval(saveDeliveryBoyLocation,LOCATION_SYNC_INTERVAL);
     }
 
     updateLocationStatus(true,"GPS active in background");
